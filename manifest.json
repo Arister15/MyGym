@@ -1,13 +1,13 @@
 {
-  "name": "Τζιμ",
-  "short_name": "Τζιμ",
+  "name": "GYM Weekly Tracker",
+  "short_name": "GYM",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
   "icons": [
     {
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Apple_logo_grey.svg/512px-Apple_logo_grey.svg.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/10/10522.png",
       "sizes": "512x512",
       "type": "image/png"
     }
