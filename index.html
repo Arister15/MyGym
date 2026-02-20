@@ -297,15 +297,17 @@
             font-size: 17px;
             outline: none;
             font-family: inherit;
-            box-sizing: border-box;
+            box-sizing: border-box; /* Διασφαλίζει ότι το padding δεν μεγαλώνει το μέγεθος */
+            width: 100%; /* Γεμίζει σωστά το χώρο χωρίς να ξεφεύγει */
             transition: border-color 0.2s;
         }
         input:focus { border-color: var(--accent-red); }
         input::placeholder { color: var(--text-sec); }
 
-        .add-group { display: flex; gap: 12px; }
-        .add-group input[type="text"] { flex: 2; }
-        .add-group input[type="number"] { flex: 1; min-width: 70px; }
+        .add-group { display: flex; gap: 12px; width: 100%; }
+        /* To min-width: 0 λέει στο flexbox να μην αφήνει το input να ξεχειλίζει */
+        .add-group input[type="text"] { flex: 2; min-width: 0; }
+        .add-group input[type="number"] { flex: 1; min-width: 0; }
 
         .action-btn {
             background: linear-gradient(135deg, var(--accent-red), #c01d15);
@@ -394,7 +396,7 @@
             </div>
             
             <div class="add-group">
-                <input type="text" id="newExName" placeholder="New exercise name...">
+                <input type="text" id="newExName" placeholder="New exercise...">
                 <input type="number" id="newExGoal" placeholder="Sets" min="1">
             </div>
             <button onclick="addExercise()" class="action-btn" style="margin-top: 10px;">Add to Routine</button>
