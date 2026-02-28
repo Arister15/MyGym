@@ -554,10 +554,10 @@
 
         function resetWeek() {
             triggerHaptic();
-            if (confirm("Reset all weekly progress and clear session logs? This cannot be undone.")) {
+            if (confirm("Reset all weekly progress? This cannot be undone.")) {
                 exercises.forEach(ex => { 
                     ex.remaining = ex.goal; 
-                    ex.logs = [{w: '', r: ''}, {w: '', r: ''}]; // Reset logs back to 2 empty sets
+                    // Τα logs (ex.logs) δεν τα πειράζουμε πλέον, οπότε μένουν ως έχουν!
                 });
                 saveData();
             }
