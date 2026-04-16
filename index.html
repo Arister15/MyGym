@@ -607,15 +607,16 @@
                 const isCompleted = ex.remaining === 0;
                 
                 // Δημιουργία των inputs για το session tracking
-                // Προστέθηκε το step="any" για να δέχεται δεκαδικά (τελεία ή κόμμα)
+                // Αλλάχθηκε σε type="text" με inputmode="decimal" για να μην μπλοκάρεται το κόμμα
+                // Και προστέθηκε το oninput να μετατρέπει το κόμμα σε τελεία αυτόματα!
                 let logsHtml = '';
                 ex.logs.forEach((log, index) => {
                     logsHtml += `
                         <div class="tracker-row">
                             <span class="tracker-label">Set ${index + 1}</span>
-                            <input type="number" inputmode="decimal" step="any" class="tracker-input" placeholder="kg" value="${log.w}" oninput="updateLog(${ex.id}, ${index}, 'w', this.value)">
+                            <input type="text" inputmode="decimal" class="tracker-input" placeholder="kg" value="${log.w}" oninput="this.value = this.value.replace(',', '.'); updateLog(${ex.id}, ${index}, 'w', this.value)">
                             <span style="color: var(--text-sec); font-weight: bold;">×</span>
-                            <input type="number" inputmode="decimal" step="any" class="tracker-input" placeholder="reps" value="${log.r}" oninput="updateLog(${ex.id}, ${index}, 'r', this.value)">
+                            <input type="text" inputmode="decimal" class="tracker-input" placeholder="reps" value="${log.r}" oninput="this.value = this.value.replace(',', '.'); updateLog(${ex.id}, ${index}, 'r', this.value)">
                         </div>
                     `;
                 });
