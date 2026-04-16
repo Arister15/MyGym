@@ -1,412 +1,773 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="GYM">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json">
-    <title>GYM</title>
-    
-    <style>
-        /* --- ULTRA MODERN iOS THEME (Red/Black/Charcoal) --- */
-        :root {
-            /* Palette */
-            --bg-main: #000000;
-            --bg-secondary: #121212; /* Deep Charcoal background gradient end */
-            
-            /* Card Gradients for depth */
-            --card-bg-top: #1F1F21;
-            --card-bg-bottom: #18181A;
-            --card-border: rgba(255, 255, 255, 0.08); /* Subtle separation */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="GYM">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <title>GYM</title>
+    
+    <style>
+        /* --- ULTRA MODERN iOS THEME (Red/Black/Charcoal) --- */
+        :root {
+            /* Palette */
+            --bg-main: #000000;
+            --bg-secondary: #121212; /* Deep Charcoal background gradient end */
+            
+            /* Card Gradients for depth */
+            --card-bg-top: #1F1F21;
+            --card-bg-bottom: #18181A;
+            --card-border: rgba(255, 255, 255, 0.08); /* Subtle separation */
 
-            /* Text */
-            --text-main: #FFFFFF;
-            --text-sec: #98989E; /* Slightly warmer gray */
-            
-            /* Accents */
-            --accent-red: #E62E25; /* Vibrant Apple-style Red */
-            --accent-red-glow: rgba(230, 46, 37, 0.3);
-            
-            /* Buttons */
-            --btn-neutral: #2C2C2E;
-            --btn-danger: #FF3B30; /* Brighter red for destructive actions */
-        }
+            /* Text */
+            --text-main: #FFFFFF;
+            --text-sec: #98989E; /* Slightly warmer gray */
+            
+            /* Accents */
+            --accent-red: #E62E25; /* Vibrant Apple-style Red */
+            --accent-red-glow: rgba(230, 46, 37, 0.3);
+            
+            /* Buttons */
+            --btn-neutral: #2C2C2E;
+            --btn-danger: #FF3B30; /* Brighter red for destructive actions */
+        }
 
-        /* Αποτροπή scroll/bounce στο iOS & dark scrollbar */
-        html, body {
-            overscroll-behavior-y: none;
-            overflow-x: hidden;
-            scrollbar-width: none; /* Firefox */
-        }
-        body::-webkit-scrollbar { display: none; /* Safari/Chrome */ }
+        /* Αποτροπή scroll/bounce στο iOS & dark scrollbar */
+        html, body {
+            overscroll-behavior-y: none;
+            overflow-x: hidden;
+            scrollbar-width: none; /* Firefox */
+        }
+        body::-webkit-scrollbar { display: none; /* Safari/Chrome */ }
 
-        body {
-            /* Subtle vertical gradient background for depth */
-            background: linear-gradient(to bottom, var(--bg-main) 0%, var(--bg-secondary) 100%);
-            background-attachment: fixed;
-            color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 20px 20px 110px 20px; /* More side padding */
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
+        body {
+            /* Subtle vertical gradient background for depth */
+            background: linear-gradient(to bottom, var(--bg-main) 0%, var(--bg-secondary) 100%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px 20px 110px 20px; /* More side padding */
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
 
-        /* Header Layout */
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 30px 0 15px 0;
-        }
+        /* Header Layout */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0 15px 0;
+        }
 
-        h1 {
-            font-size: 38px; /* Larger */
-            font-weight: 900; /* Bolder */
-            margin: 0;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #fff, #d0d0d0); /* Gradient text */
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        h1 {
+            font-size: 38px; /* Larger */
+            font-weight: 900; /* Bolder */
+            margin: 0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, #d0d0d0); /* Gradient text */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-        #settingsBtn {
-            background: rgba(44, 44, 46, 0.5); /* Semi-transparent button */
-            color: var(--text-main);
-            width: 44px;
-            height: 44px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: background 0.2s;
-        }
-        #settingsBtn:active { background: rgba(60, 60, 64, 0.8); }
+        #settingsBtn {
+            background: rgba(44, 44, 46, 0.5); /* Semi-transparent button */
+            color: var(--text-main);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background 0.2s;
+        }
+        #settingsBtn:active { background: rgba(60, 60, 64, 0.8); }
 
-        /* Progress Bar */
-        .progress-container {
-            margin-bottom: 35px;
-        }
-        .progress-bar-bg {
-            background-color: var(--btn-neutral);
-            border-radius: 20px; /* Pill shape */
-            height: 16px; /* Thicker */
-            width: 100%;
-            overflow: hidden;
-            margin-bottom: 10px;
-            border: 1px solid var(--card-border);
-        }
-        .progress-bar-fill {
-            background-color: var(--accent-red);
-            height: 100%;
-            width: 0%;
-            border-radius: 20px;
-            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-            /* Subtle red glow */
-            box-shadow: 0 0 12px var(--accent-red-glow);
-        }
-        .progress-text {
-            color: var(--text-sec);
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-        }
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 35px;
+        }
+        .progress-bar-bg {
+            background-color: var(--btn-neutral);
+            border-radius: 20px; /* Pill shape */
+            height: 16px; /* Thicker */
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 10px;
+            border: 1px solid var(--card-border);
+        }
+        .progress-bar-fill {
+            background-color: var(--accent-red);
+            height: 100%;
+            width: 0%;
+            border-radius: 20px;
+            transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            /* Subtle red glow */
+            box-shadow: 0 0 12px var(--accent-red-glow);
+        }
+        .progress-text {
+            color: var(--text-sec);
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
 
-        /* Exercise Cards - The Main Event */
-        #exerciseList {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        /* Exercise Cards - The Main Event */
+        #exerciseList {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-        .card {
-            /* Gradient background for depth */
-            background: linear-gradient(to bottom, var(--card-bg-top), var(--card-bg-bottom));
-            border: 1px solid var(--card-border);
-            border-radius: 22px; /* Super rounded */
-            padding: 20px;
-            display: flex;
-            flex-direction: column; /* Άλλαξε για να χωράει τα logs από κάτω */
-            align-items: stretch;
-            gap: 16px; /* Απόσταση main row με logs */
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Soft shadow */
-        }
-        
-        .card-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-        
-        /* Completed State - Red Accent */
-        .card.completed {
-            background: linear-gradient(to bottom, #161618, #0f0f11); /* Darker when done */
-            border-color: rgba(230, 46, 37, 0.2); /* Subtle red border */
-        }
-        
-        .card-left { flex: 1; }
-        
-        .exercise-name {
-            font-size: 19px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s;
-        }
-        .card.completed .exercise-name {
-            color: var(--accent-red); /* Name turns red */
-        }
+        .card {
+            /* Gradient background for depth */
+            background: linear-gradient(to bottom, var(--card-bg-top), var(--card-bg-bottom));
+            border: 1px solid var(--card-border);
+            border-radius: 22px; /* Super rounded */
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* Άλλαξε για να χωράει τα logs από κάτω */
+            align-items: stretch;
+            gap: 16px; /* Απόσταση main row με logs */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Soft shadow */
+        }
+        
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
+        /* Completed State - Red Accent */
+        .card.completed {
+            background: linear-gradient(to bottom, #161618, #0f0f11); /* Darker when done */
+            border-color: rgba(230, 46, 37, 0.2); /* Subtle red border */
+        }
+        
+        .card-left { flex: 1; }
+        
+        .exercise-name {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+        .card.completed .exercise-name {
+            color: var(--accent-red); /* Name turns red */
+        }
 
-        .checkmark { display: none; color: var(--accent-red); }
-        .card.completed .checkmark { display: inline-block; }
-        
-        .exercise-status {
-            color: var(--text-sec);
-            font-size: 15px;
-            font-weight: 500;
-        }
-        .card.completed .exercise-status {
-            color: var(--accent-red);
-            opacity: 0.8;
-        }
-        .card-right {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .checkmark { display: none; color: var(--accent-red); }
+        .card.completed .checkmark { display: inline-block; }
+        
+        .exercise-status {
+            color: var(--text-sec);
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .card.completed .exercise-status {
+            color: var(--accent-red);
+            opacity: 0.8;
+        }
+        .card-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-        /* Buttons */
-        button {
-            border: none;
-            outline: none;
-            cursor: pointer;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .circle-btn {
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            transition: transform 0.1s, background 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .circle-btn:active { transform: scale(0.92); }
+        /* Buttons */
+        button {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .circle-btn {
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            transition: transform 0.1s, background 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .circle-btn:active { transform: scale(0.92); }
 
-        .btn-minus { 
-            background-color: var(--btn-neutral); 
-            width: 38px; height: 38px; /* Slightly larger */
-            font-size: 20px;
-        }
-        /* Plus button is now RED */
-        .btn-plus { 
-            background: linear-gradient(135deg, var(--accent-red), #c01d15);
-            width: 48px; height: 48px; /* Larger and plump */
-            font-size: 26px;
-            box-shadow: 0 4px 10px var(--accent-red-glow);
-        }
-        
-        .card.completed .btn-plus {
-             background: var(--btn-neutral); /* Neutral when done */
-             box-shadow: none;
-             opacity: 0.5;
-        }
+        .btn-minus { 
+            background-color: var(--btn-neutral); 
+            width: 38px; height: 38px; /* Slightly larger */
+            font-size: 20px;
+        }
+        /* Plus button is now RED */
+        .btn-plus { 
+            background: linear-gradient(135deg, var(--accent-red), #c01d15);
+            width: 48px; height: 48px; /* Larger and plump */
+            font-size: 26px;
+            box-shadow: 0 4px 10px var(--accent-red-glow);
+        }
+        
+        .card.completed .btn-plus {
+             background: var(--btn-neutral); /* Neutral when done */
+             box-shadow: none;
+             opacity: 0.5;
+        }
 
-        /* --- SET TRACKING SYSTEM --- */
-        .tracker-container {
-            border-top: 1px solid var(--card-border);
-            padding-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .tracker-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .tracker-label {
-            color: var(--text-sec);
-            font-size: 14px;
-            width: 45px;
-            font-weight: 500;
-        }
-        .tracker-input {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--card-border);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 15px;
-            text-align: center;
-            flex: 1;
-            min-width: 0;
-            transition: border-color 0.2s;
-        }
-        .tracker-input:focus { border-color: var(--accent-red); }
-        .tracker-input::placeholder { color: rgba(152, 152, 158, 0.4); }
-        
-        .tracker-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        .tracker-btn {
-            background: var(--btn-neutral);
-            color: var(--text-sec);
-            border-radius: 8px;
-            padding: 6px 14px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-        .tracker-btn:active { opacity: 0.7; }
+        /* --- SET TRACKING SYSTEM --- */
+        .tracker-container {
+            border-top: 1px solid var(--card-border);
+            padding-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .tracker-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tracker-label {
+            color: var(--text-sec);
+            font-size: 14px;
+            width: 45px;
+            font-weight: 500;
+        }
+        .tracker-input {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--card-border);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 0;
+            transition: border-color 0.2s;
+        }
+        .tracker-input:focus { border-color: var(--accent-red); }
+        .tracker-input::placeholder { color: rgba(152, 152, 158, 0.4); }
+        
+        .tracker-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .tracker-btn {
+            background: var(--btn-neutral);
+            color: var(--text-sec);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .tracker-btn:active { opacity: 0.7; }
 
-        /* Reset Button */
-        #resetBtn {
-            position: fixed;
-            bottom: 35px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--btn-danger), #d62d24);
-            color: white;
-            border-radius: 30px; /* Pill shape */
-            padding: 16px 32px;
-            font-size: 17px;
-            font-weight: 700;
-            width: calc(100% - 60px);
-            max-width: 380px;
-            z-index: 10;
-            box-shadow: 0 5px 15px rgba(255, 59, 48, 0.3);
-            transition: transform 0.1s;
-        }
-        #resetBtn:active { transform: translateX(-50%) scale(0.96); }
+        /* Reset Button */
+        #resetBtn {
+            position: fixed;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--btn-danger), #d62d24);
+            color: white;
+            border-radius: 30px; /* Pill shape */
+            padding: 16px 32px;
+            font-size: 17px;
+            font-weight: 700;
+            width: calc(100% - 60px);
+            max-width: 380px;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(255, 59, 48, 0.3);
+            transition: transform 0.1s;
+        }
+        #resetBtn:active { transform: translateX(-50%) scale(0.96); }
 
-        /* --- MODALS (Glassmorphism) --- */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.6); /* Lighter overlay */
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(15px); /* Stronger blur behind */
-            -webkit-backdrop-filter: blur(15px);
-        }
+        /* --- MODALS (Glassmorphism) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6); /* Lighter overlay */
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(15px); /* Stronger blur behind */
+            -webkit-backdrop-filter: blur(15px);
+        }
 
-        .modal-content {
-            /* Frosted Glass effect */
-            background: rgba(28, 28, 30, 0.85);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            
-            width: 90%;
-            max-width: 400px;
-            max-height: 85vh;
-            border-radius: 26px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            box-sizing: border-box;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
+        .modal-content {
+            /* Frosted Glass effect */
+            background: rgba(28, 28, 30, 0.85);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            
+            width: 90%;
+            max-width: 400px;
+            max-height: 85vh;
+            border-radius: 26px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            box-sizing: border-box;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .modal-header h2 { margin: 0; font-size: 26px; font-weight: 800; }
-        .close-btn {
-            background: var(--btn-neutral);
-            color: var(--text-sec);
-            border-radius: 50%;
-            width: 32px; height: 32px;
-            font-size: 18px;
-            display: flex; justify-content: center; align-items: center;
-        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .modal-header h2 { margin: 0; font-size: 26px; font-weight: 800; }
+        .close-btn {
+            background: var(--btn-neutral);
+            color: var(--text-sec);
+            border-radius: 50%;
+            width: 32px; height: 32px;
+            font-size: 18px;
+            display: flex; justify-content: center; align-items: center;
+        }
 
-        /* Inputs & Forms */
-        input {
-            background: rgba(0,0,0,0.2); /* Slightly transparent inputs */
-            border: 1px solid var(--card-border);
-            color: white;
-            padding: 16px;
-            border-radius: 14px;
-            font-size: 17px;
-            outline: none;
-            font-family: inherit;
-            box-sizing: border-box; /* Διασφαλίζει ότι το padding δεν μεγαλώνει το μέγεθος */
-            width: 100%; /* Γεμίζει σωστά το χώρο χωρίς να ξεφεύγει */
-            transition: border-color 0.2s;
-        }
-        input:focus { border-color: var(--accent-red); }
-        input::placeholder { color: var(--text-sec); }
+        /* Inputs & Forms */
+        input {
+            background: rgba(0,0,0,0.2); /* Slightly transparent inputs */
+            border: 1px solid var(--card-border);
+            color: white;
+            padding: 16px;
+            border-radius: 14px;
+            font-size: 17px;
+            outline: none;
+            font-family: inherit;
+            box-sizing: border-box; /* Διασφαλίζει ότι το padding δεν μεγαλώνει το μέγεθος */
+            width: 100%; /* Γεμίζει σωστά το χώρο χωρίς να ξεφεύγει */
+            transition: border-color 0.2s;
+        }
+        input:focus { border-color: var(--accent-red); }
+        input::placeholder { color: var(--text-sec); }
 
-        .add-group { display: flex; gap: 12px; width: 100%; }
-        /* To min-width: 0 λέει στο flexbox να μην αφήνει το input να ξεχειλίζει */
-        .add-group input[type="text"] { flex: 2; min-width: 0; }
-        .add-group input[type="number"] { flex: 1; min-width: 0; }
+        .add-group { display: flex; gap: 12px; width: 100%; }
+        /* To min-width: 0 λέει στο flexbox να μην αφήνει το input να ξεχειλίζει */
+        .add-group input[type="text"] { flex: 2; min-width: 0; }
+        .add-group input[type="number"] { flex: 1; min-width: 0; }
 
-        .action-btn {
-            background: linear-gradient(135deg, var(--accent-red), #c01d15);
-            color: white;
-            border-radius: 14px;
-            padding: 16px;
-            font-size: 17px;
-            font-weight: 700;
-            text-align: center;
-            flex: 1;
-            box-shadow: 0 4px 12px var(--accent-red-glow);
-        }
-        .action-btn:active { transform: scale(0.97); }
-        
-        .action-btn.cancel { 
-            background: var(--btn-neutral); 
-            color: var(--text-main);
-            box-shadow: none;
-        }
-        .action-btn.danger { background: var(--btn-danger); box-shadow: none; }
+        .action-btn {
+            background: linear-gradient(135deg, var(--accent-red), #c01d15);
+            color: white;
+            border-radius: 14px;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 700;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 4px 12px var(--accent-red-glow);
+        }
+        .action-btn:active { transform: scale(0.97); }
+        
+        .action-btn.cancel { 
+            background: var(--btn-neutral); 
+            color: var(--text-main);
+            box-shadow: none;
+        }
+        .action-btn.danger { background: var(--btn-danger); box-shadow: none; }
 
-        .modal-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 15px; }
 
-        /* Settings Exercise List */
-        .settings-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-            margin-top: 15px;
-            padding-bottom: 20px;
-        }
-        .set-item {
-            background: rgba(44, 44, 46, 0.6); /* More transparent */
-            padding: 14px 18px;
-            border-radius: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--card-border);
-        }
-        .set-item-info { flex: 1; }
-        .set-item-name { font-weight: 700; font-size: 16px; }
-        .set-item-goal { color: var(--text-sec); font-size: 1
+        /* Settings Exercise List */
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            margin-top: 15px;
+            padding-bottom: 20px;
+        }
+        .set-item {
+            background: rgba(44, 44, 46, 0.6); /* More transparent */
+            padding: 14px 18px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--card-border);
+        }
+        .set-item-info { flex: 1; }
+        .set-item-name { font-weight: 700; font-size: 16px; }
+        .set-item-goal { color: var(--text-sec); font-size: 14px; margin-top: 3px; }
+        
+        .set-item-actions { display: flex; gap: 10px; }
+        .set-item-actions button {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            color: white; font-size: 18px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .btn-edit { background: var(--btn-neutral); color: var(--text-main); }
+        .btn-del { background: rgba(255, 59, 48, 0.2); color: var(--btn-danger); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <h1>GYM</h1>
+            <button id="settingsBtn" onclick="openSettings()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0% weekly volume.</div>
+        </div>
+    </header>
+
+    <main id="exerciseList"></main>
+
+    <button id="resetBtn" onclick="resetWeek()">Reset Week</button>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button onclick="closeSettings()" class="close-btn">✕</button>
+            </div>
+            
+            <div class="add-group">
+                <input type="text" id="newExName" placeholder="New exercise...">
+                <input type="number" id="newExGoal" placeholder="Sets" min="1">
+            </div>
+            <button onclick="addExercise()" class="action-btn" style="margin-top: 10px;">Add to Routine</button>
+
+            <div class="settings-list" id="settingsExerciseList"></div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Exercise</h2>
+            </div>
+            <input type="hidden" id="editExId">
+            <label style="font-weight: 600; margin-bottom: -10px;">Name</label>
+            <input type="text" id="editExName" placeholder="Exercise Name">
+            <label style="font-weight: 600; margin-bottom: -10px; margin-top: 10px;">Weekly Goal</label>
+            <input type="number" id="editExGoal" placeholder="Total Sets Goal" min="1">
+            
+            <div class="modal-actions">
+                <button onclick="closeEditModal()" class="action-btn cancel">Cancel</button>
+                <button onclick="saveEdit()" class="action-btn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* --- CORE DATA & LOGIC --- */
+        
+        const initialExercises = [
+            { id: 1, name: "Flat Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 2, name: "Incline Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 3, name: "Shoulder Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 4, name: "Seated Row", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 5, name: "Lat Pulldown", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 6, name: "Lateral Raises", goal: 7, remaining: 7, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 7, name: "Rear Delts", goal: 4, remaining: 4, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 8, name: "Tricep (Overhead)", goal: 3, remaining: 3, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 9, name: "Tricep Extension", goal: 2, remaining: 2, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 10, name: "Biceps", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 11, name: "Shrugs", goal: 3, remaining: 3, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 12, name: "Leg Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 13, name: "Leg Extension", goal: 2, remaining: 2, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 14, name: "Leg Curl", goal: 6, remaining: 6, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 15, name: "RDL", goal: 4, remaining: 4, logs: [{w:'', r:''}, {w:'', r:''}] }
+        ];
+
+        let exercises = [];
+
+        function triggerHaptic() {
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function initApp() {
+            const savedData = localStorage.getItem('gymData'); 
+            if (savedData) {
+                exercises = JSON.parse(savedData);
+                // Backwards compatibility: αν έχεις ήδη save χωρίς logs, πρόσθεσέ τα
+                exercises.forEach(ex => {
+                    if (!ex.logs) {
+                        ex.logs = [{w: '', r: ''}, {w: '', r: ''}];
+                    }
+                });
+            } else {
+                exercises = JSON.parse(JSON.stringify(initialExercises));
+            }
+            renderUI();
+        }
+
+        function saveData() {
+            localStorage.setItem('gymData', JSON.stringify(exercises));
+            renderUI();
+            if(document.getElementById('settingsModal').style.display === 'flex') {
+                renderSettingsList();
+            }
+        }
+
+        /* --- DASHBOARD LOGIC --- */
+
+        function addSet(id) {
+            triggerHaptic();
+            const ex = exercises.find(e => e.id === id);
+            if (ex && ex.remaining > 0) {
+                ex.remaining -= 1;
+                saveData();
+            }
+        }
+
+        function removeSet(id) {
+            triggerHaptic();
+            const ex = exercises.find(e => e.id === id);
+            if (ex && ex.remaining < ex.goal) {
+                ex.remaining += 1;
+                saveData();
+            }
+        }
+
+        function resetWeek() {
+            triggerHaptic();
+            if (confirm("Reset all weekly progress? This cannot be undone.")) {
+                exercises.forEach(ex => { 
+                    ex.remaining = ex.goal; 
+                    // Τα logs (ex.logs) δεν τα πειράζουμε πλέον, οπότε μένουν ως έχουν!
+                });
+                saveData();
+            }
+        }
+
+        /* --- LOGGING LOGIC --- */
+
+        function updateLog(exId, logIndex, field, value) {
+            const ex = exercises.find(e => e.id === exId);
+            if (ex) {
+                ex.logs[logIndex][field] = value;
+                // Αποθηκεύουμε στο localStorage ΧΩΡΙΣ να κάνουμε renderUI,
+                // αλλιώς ο χρήστης θα χάνει το "focus" από το πληκτρολόγιο
+                localStorage.setItem('gymData', JSON.stringify(exercises));
+            }
+        }
+
+        function addLogSet(id) {
+            triggerHaptic();
+            const ex = exercises.find(e => e.id === id);
+            if (ex) {
+                ex.logs.push({w: '', r: ''});
+                saveData();
+            }
+        }
+
+        function removeLogSet(id) {
+            triggerHaptic();
+            const ex = exercises.find(e => e.id === id);
+            if (ex && ex.logs.length > 1) { // Minimum 1 set log
+                ex.logs.pop();
+                saveData();
+            }
+        }
+
+        function renderUI() {
+            const listContainer = document.getElementById('exerciseList');
+            listContainer.innerHTML = '';
+            
+            let totalGoal = 0;
+            let totalRemaining = 0;
+
+            exercises.forEach(ex => {
+                totalGoal += ex.goal;
+                totalRemaining += ex.remaining;
+
+                const isCompleted = ex.remaining === 0;
+                
+                // Δημιουργία των inputs για το session tracking
+                let logsHtml = '';
+                ex.logs.forEach((log, index) => {
+                    logsHtml += `
+                        <div class="tracker-row">
+                            <span class="tracker-label">Set ${index + 1}</span>
+                            <input type="number" inputmode="decimal" class="tracker-input" placeholder="kg" value="${log.w}" oninput="updateLog(${ex.id}, ${index}, 'w', this.value)">
+                            <span style="color: var(--text-sec); font-weight: bold;">×</span>
+                            <input type="number" inputmode="numeric" class="tracker-input" placeholder="reps" value="${log.r}" oninput="updateLog(${ex.id}, ${index}, 'r', this.value)">
+                        </div>
+                    `;
+                });
+                
+                const card = document.createElement('div');
+                card.className = `card ${isCompleted ? 'completed' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="card-top">
+                        <div class="card-left">
+                            <div class="exercise-name">
+                                ${ex.name} 
+                                <span class="checkmark">✓</span>
+                            </div>
+                            <div class="exercise-status">${ex.remaining} / ${ex.goal} sets left</div>
+                        </div>
+                        <div class="card-right">
+                            <button class="circle-btn btn-minus" onclick="removeSet(${ex.id})">-</button>
+                            <button class="circle-btn btn-plus" onclick="addSet(${ex.id})">+</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tracker-container">
+                        ${logsHtml}
+                        <div class="tracker-actions">
+                            <button class="tracker-btn" onclick="removeLogSet(${ex.id})">- Set</button>
+                            <button class="tracker-btn" onclick="addLogSet(${ex.id})">+ Set</button>
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(card);
+            });
+
+            const completedSets = totalGoal - totalRemaining;
+            let progressPercent = 0;
+            if (totalGoal > 0) {
+                progressPercent = Math.round((completedSets / totalGoal) * 100);
+            }
+
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+            document.getElementById('progressText').innerText = `${progressPercent}% weekly volume.`;
+        }
+
+        /* --- SETTINGS LOGIC --- */
+
+        function openSettings() {
+            triggerHaptic();
+            document.getElementById('settingsModal').style.display = 'flex';
+            renderSettingsList();
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function renderSettingsList() {
+            const list = document.getElementById('settingsExerciseList');
+            list.innerHTML = '';
+
+            exercises.forEach(ex => {
+                const item = document.createElement('div');
+                item.className = 'set-item';
+                item.innerHTML = `
+                    <div class="set-item-info">
+                        <div class="set-item-name">${ex.name}</div>
+                        <div class="set-item-goal">Goal: ${ex.goal} sets</div>
+                    </div>
+                    <div class="set-item-actions">
+                        <button class="btn-edit" onclick="openEditModal(${ex.id})">✎</button>
+                        <button class="btn-del" onclick="deleteExercise(${ex.id})">🗑</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function addExercise() {
+            const nameInput = document.getElementById('newExName');
+            const goalInput = document.getElementById('newExGoal');
+            
+            const name = nameInput.value.trim();
+            const goal = parseInt(goalInput.value);
+
+            if (!name || isNaN(goal) || goal < 1) {
+                alert("Please enter a valid name and number of sets.");
+                return;
+            }
+
+            const newId = exercises.length > 0 ? Math.max(...exercises.map(e => e.id)) + 1 : 1;
+            
+            exercises.push({
+                id: newId,
+                name: name,
+                goal: goal,
+                remaining: goal,
+                logs: [{w: '', r: ''}, {w: '', r: ''}] // Default 2 sets
+            });
+
+            nameInput.value = '';
+            goalInput.value = '';
+            saveData();
+        }
+
+        function deleteExercise(id) {
+            if(confirm("Delete this exercise permanently?")) {
+                exercises = exercises.filter(ex => ex.id !== id);
+                saveData();
+            }
+        }
+
+        /* --- EDIT LOGIC --- */
+
+        function openEditModal(id) {
+            const ex = exercises.find(e => e.id === id);
+            if (!ex) return;
+
+            document.getElementById('editExId').value = ex.id;
+            document.getElementById('editExName').value = ex.name;
+            document.getElementById('editExGoal').value = ex.goal;
+            
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function saveEdit() {
+            const id = parseInt(document.getElementById('editExId').value);
+            const newName = document.getElementById('editExName').value.trim();
+            const newGoal = parseInt(document.getElementById('editExGoal').value);
+
+            if (!newName || isNaN(newGoal) || newGoal < 1) {
+                alert("Please enter valid data.");
+                return;
+            }
+
+            const exIndex = exercises.findIndex(e => e.id === id);
+            if (exIndex !== -1) {
+                const ex = exercises[exIndex];
+                ex.name = newName;
+                
+                const completedSets = ex.goal - ex.remaining;
+                ex.goal = newGoal;
+                ex.remaining = Math.max(0, newGoal - completedSets);
+
+                saveData();
+                closeEditModal();
+            }
+        }
+
+        // Start App
+        initApp();
+    </script>
+</body>
+</html>
