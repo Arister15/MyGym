@@ -770,6 +770,15 @@
 
         // Start App
         initApp();
+
+        // --- REGISTRATION TOY SERVICE WORKER (OFFLINE MODE) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered with success!', reg))
+                    .catch(err => console.log('Service Worker registration failed.', err));
+            });
+        }
     </script>
 </body>
 </html>
