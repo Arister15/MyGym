@@ -34,14 +34,14 @@
             --btn-danger: #FF3B30; /* Brighter red for destructive actions */
         }
 
-        /* Αποτροπή scroll/bounce στο iOS & dark scrollbar */
-        html, body {
-            overscroll-behavior-y: none;
+        /* ΔΙΟΡΘΩΣΗ SCROLL ΓΙΑ ANDROID & iOS */
+        html {
+            height: 100%;
             overflow-x: hidden;
+            overflow-y: auto; /* Ρητή ενεργοποίηση vertical scroll */
             scrollbar-width: none; /* Firefox */
         }
-        body::-webkit-scrollbar { display: none; /* Safari/Chrome */ }
-
+        
         body {
             /* Subtle vertical gradient background for depth */
             background: linear-gradient(to bottom, var(--bg-main) 0%, var(--bg-secondary) 100%);
@@ -49,13 +49,17 @@
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px 20px 110px 20px; /* More side padding */
+            padding: 20px 20px 140px 20px; /* Αυξημένο κάτω padding για να μην κρύβεται περιεχόμενο πίσω από το κουμπί */
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            min-height: 100vh;
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: visible;
             box-sizing: border-box;
         }
+
+        body::-webkit-scrollbar { display: none; /* Safari/Chrome */ }
 
         /* Header Layout */
         .header-top {
