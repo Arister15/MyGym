@@ -410,6 +410,18 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid var(--card-border);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            transition: transform 0.15s ease, background 0.2s, border-color 0.2s;
+        }
+        .set-item.dragging {
+            opacity: 0.8;
+            transform: scale(1.02);
+            border-color: var(--accent-red);
+            background: rgba(60, 60, 64, 0.9);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10;
         }
         .set-item-info { flex: 1; }
         .set-item-name { font-weight: 700; font-size: 16px; }
@@ -525,6 +537,7 @@
             } else {
                 exercises = JSON.parse(JSON.stringify(initialExercises));
             }
+            initDragAndDropListeners();
             renderUI();
         }
 
@@ -664,7 +677,76 @@
             document.getElementById('progressText').innerText = `${progressPercent}% weekly volume.`;
         }
 
-        /* --- SETTINGS LOGIC --- */
+        /* --- SETTINGS LOGIC & DRAG AND DROP REORDER --- */
+
+        let activeDragItem = null;
+        let longPressTimer = null;
+        let startY = 0;
+
+        function attachItemDragStart(item) {
+            const handleStart = (e) => {
+                if (e.target.closest('.set-item-actions')) return;
+
+                const touch = e.touches ? e.touches[0] : e;
+                startY = touch.clientY;
+
+                clearTimeout(longPressTimer);
+                longPressTimer = setTimeout(() => {
+                    activeDragItem = item;
+                    item.classList.add('dragging');
+                    triggerHaptic();
+                }, 400); // 400ms παρατεταμένο πάτημα
+            };
+
+            item.addEventListener('touchstart', handleStart, { passive: true });
+            item.addEventListener('mousedown', handleStart);
+        }
+
+        function initDragAndDropListeners() {
+            const handleMove = (e) => {
+                const touch = e.touches ? e.touches[0] : e;
+
+                if (!activeDragItem) {
+                    if (longPressTimer && Math.abs(touch.clientY - startY) > 10) {
+                        clearTimeout(longPressTimer);
+                    }
+                    return;
+                }
+
+                if (e.cancelable) e.preventDefault();
+
+                const clientY = touch.clientY;
+                const targetEl = document.elementFromPoint(touch.clientX, clientY);
+                const targetItem = targetEl ? targetEl.closest('.set-item') : null;
+                const list = document.getElementById('settingsExerciseList');
+
+                if (targetItem && targetItem !== activeDragItem && targetItem.parentNode === list) {
+                    const rect = targetItem.getBoundingClientRect();
+                    const next = (clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+                    list.insertBefore(activeDragItem, next ? targetItem.nextSibling : targetItem);
+                }
+            };
+
+            const handleEnd = () => {
+                clearTimeout(longPressTimer);
+                if (activeDragItem) {
+                    activeDragItem.classList.remove('dragging');
+                    activeDragItem = null;
+                    
+                    const list = document.getElementById('settingsExerciseList');
+                    const newOrderIds = Array.from(list.children).map(child => parseInt(child.dataset.id));
+                    exercises.sort((a, b) => newOrderIds.indexOf(a.id) - newOrderIds.indexOf(b.id));
+                    saveData();
+                }
+            };
+
+            window.addEventListener('touchmove', handleMove, { passive: false });
+            window.addEventListener('touchend', handleEnd);
+            window.addEventListener('touchcancel', handleEnd);
+
+            window.addEventListener('mousemove', handleMove);
+            window.addEventListener('mouseup', handleEnd);
+        }
 
         function openSettings() {
             triggerHaptic();
@@ -683,6 +765,7 @@
             exercises.forEach(ex => {
                 const item = document.createElement('div');
                 item.className = 'set-item';
+                item.dataset.id = ex.id;
                 item.innerHTML = `
                     <div class="set-item-info">
                         <div class="set-item-name">${ex.name}</div>
@@ -693,6 +776,7 @@
                         <button class="btn-del" onclick="deleteExercise(${ex.id})">🗑</button>
                     </div>
                 `;
+                attachItemDragStart(item);
                 list.appendChild(item);
             });
         }
