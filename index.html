@@ -59,6 +59,12 @@
             box-sizing: border-box;
         }
 
+        /* Κλείδωμα scroll πίσω οθόνης όταν είναι ανοιχτό κάποιο modal */
+        body.modal-open {
+            overflow: hidden !important;
+            touch-action: none;
+        }
+
         body::-webkit-scrollbar { display: none; /* Safari/Chrome */ }
 
         /* Header Layout */
@@ -401,6 +407,7 @@
             overflow-y: auto;
             margin-top: 15px;
             padding-bottom: 20px;
+            touch-action: pan-y;
         }
         .set-item {
             background: rgba(44, 44, 46, 0.6); /* More transparent */
@@ -524,11 +531,22 @@
             if (navigator.vibrate) navigator.vibrate(50);
         }
 
+        /* --- LOCK BACKGROUND SCROLL --- */
+        function updateScrollLock() {
+            const settingsOpen = document.getElementById('settingsModal').style.display === 'flex';
+            const editOpen = document.getElementById('editModal').style.display === 'flex';
+            
+            if (settingsOpen || editOpen) {
+                document.body.classList.add('modal-open');
+            } else {
+                document.body.classList.remove('modal-open');
+            }
+        }
+
         function initApp() {
             const savedData = localStorage.getItem('gymData'); 
             if (savedData) {
                 exercises = JSON.parse(savedData);
-                // Backwards compatibility: αν έχεις ήδη save χωρίς logs, πρόσθεσέ τα
                 exercises.forEach(ex => {
                     if (!ex.logs) {
                         ex.logs = [{w: '', r: ''}, {w: '', r: ''}];
@@ -574,7 +592,6 @@
             if (confirm("Reset all weekly progress? This cannot be undone.")) {
                 exercises.forEach(ex => { 
                     ex.remaining = ex.goal; 
-                    // Τα logs (ex.logs) δεν τα πειράζουμε πλέον, οπότε μένουν ως έχουν!
                 });
                 saveData();
             }
@@ -586,8 +603,6 @@
             const ex = exercises.find(e => e.id === exId);
             if (ex) {
                 ex.logs[logIndex][field] = value;
-                // Αποθηκεύουμε στο localStorage ΧΩΡΙΣ να κάνουμε renderUI,
-                // αλλιώς ο χρήστης θα χάνει το "focus" από το πληκτρολόγιο
                 localStorage.setItem('gymData', JSON.stringify(exercises));
             }
         }
@@ -604,7 +619,7 @@
         function removeLogSet(id) {
             triggerHaptic();
             const ex = exercises.find(e => e.id === id);
-            if (ex && ex.logs.length > 1) { // Minimum 1 set log
+            if (ex && ex.logs.length > 1) {
                 ex.logs.pop();
                 saveData();
             }
@@ -623,9 +638,6 @@
 
                 const isCompleted = ex.remaining === 0;
                 
-                // Δημιουργία των inputs για το session tracking
-                // Αλλάχθηκε σε type="text" με inputmode="decimal" για να μην μπλοκάρεται το κόμμα
-                // Και προστέθηκε το oninput να μετατρέπει το κόμμα σε τελεία αυτόματα!
                 let logsHtml = '';
                 ex.logs.forEach((log, index) => {
                     logsHtml += `
@@ -677,11 +689,14 @@
             document.getElementById('progressText').innerText = `${progressPercent}% weekly volume.`;
         }
 
-        /* --- SETTINGS LOGIC & DRAG AND DROP REORDER --- */
+        /* --- SETTINGS LOGIC & AUTO-SCROLL DRAG AND DROP REORDER --- */
 
         let activeDragItem = null;
         let longPressTimer = null;
         let startY = 0;
+        let currentTouchX = 0;
+        let currentTouchY = 0;
+        let autoScrollFrame = null;
 
         function attachItemDragStart(item) {
             const handleStart = (e) => {
@@ -689,12 +704,17 @@
 
                 const touch = e.touches ? e.touches[0] : e;
                 startY = touch.clientY;
+                currentTouchX = touch.clientX;
+                currentTouchY = touch.clientY;
 
                 clearTimeout(longPressTimer);
                 longPressTimer = setTimeout(() => {
                     activeDragItem = item;
                     item.classList.add('dragging');
                     triggerHaptic();
+                    if (!autoScrollFrame) {
+                        autoScrollFrame = requestAnimationFrame(doAutoScroll);
+                    }
                 }, 400); // 400ms παρατεταμένο πάτημα
             };
 
@@ -702,12 +722,50 @@
             item.addEventListener('mousedown', handleStart);
         }
 
+        function reorderItems(clientX, clientY) {
+            if (!activeDragItem) return;
+            const targetEl = document.elementFromPoint(clientX, clientY);
+            const targetItem = targetEl ? targetEl.closest('.set-item') : null;
+            const list = document.getElementById('settingsExerciseList');
+
+            if (targetItem && targetItem !== activeDragItem && targetItem.parentNode === list) {
+                const rect = targetItem.getBoundingClientRect();
+                const next = (clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+                list.insertBefore(activeDragItem, next ? targetItem.nextSibling : targetItem);
+            }
+        }
+
+        function doAutoScroll() {
+            if (!activeDragItem) return;
+
+            const list = document.getElementById('settingsExerciseList');
+            if (list) {
+                const rect = list.getBoundingClientRect();
+                const threshold = 45; // Περιοχή ενεργοποίησης scroll στα άκρα
+                const maxSpeed = 5;  // Αργό και ομαλό (smooth) scroll
+
+                if (currentTouchY < rect.top + threshold && currentTouchY > rect.top - 30) {
+                    const intensity = Math.min(1, Math.max(0, (rect.top + threshold - currentTouchY) / threshold));
+                    list.scrollTop -= Math.max(1, intensity * maxSpeed);
+                    reorderItems(currentTouchX, currentTouchY);
+                } else if (currentTouchY > rect.bottom - threshold && currentTouchY < rect.bottom + 30) {
+                    const intensity = Math.min(1, Math.max(0, (currentTouchY - (rect.bottom - threshold)) / threshold));
+                    list.scrollTop += Math.max(1, intensity * maxSpeed);
+                    reorderItems(currentTouchX, currentTouchY);
+                }
+            }
+
+            autoScrollFrame = requestAnimationFrame(doAutoScroll);
+        }
+
         function initDragAndDropListeners() {
             const handleMove = (e) => {
                 const touch = e.touches ? e.touches[0] : e;
+                currentTouchX = touch.clientX;
+                currentTouchY = touch.clientY;
 
                 if (!activeDragItem) {
-                    if (longPressTimer && Math.abs(touch.clientY - startY) > 10) {
+                    if (longPressTimer && Math.abs(currentTouchY - startY) > 10) {
                         clearTimeout(longPressTimer);
                     }
                     return;
@@ -715,20 +773,15 @@
 
                 if (e.cancelable) e.preventDefault();
 
-                const clientY = touch.clientY;
-                const targetEl = document.elementFromPoint(touch.clientX, clientY);
-                const targetItem = targetEl ? targetEl.closest('.set-item') : null;
-                const list = document.getElementById('settingsExerciseList');
-
-                if (targetItem && targetItem !== activeDragItem && targetItem.parentNode === list) {
-                    const rect = targetItem.getBoundingClientRect();
-                    const next = (clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
-                    list.insertBefore(activeDragItem, next ? targetItem.nextSibling : targetItem);
-                }
+                reorderItems(currentTouchX, currentTouchY);
             };
 
             const handleEnd = () => {
                 clearTimeout(longPressTimer);
+                if (autoScrollFrame) {
+                    cancelAnimationFrame(autoScrollFrame);
+                    autoScrollFrame = null;
+                }
                 if (activeDragItem) {
                     activeDragItem.classList.remove('dragging');
                     activeDragItem = null;
@@ -751,11 +804,13 @@
         function openSettings() {
             triggerHaptic();
             document.getElementById('settingsModal').style.display = 'flex';
+            updateScrollLock();
             renderSettingsList();
         }
 
         function closeSettings() {
             document.getElementById('settingsModal').style.display = 'none';
+            updateScrollLock();
         }
 
         function renderSettingsList() {
@@ -800,7 +855,7 @@
                 name: name,
                 goal: goal,
                 remaining: goal,
-                logs: [{w: '', r: ''}, {w: '', r: ''}] // Default 2 sets
+                logs: [{w: '', r: ''}, {w: '', r: ''}]
             });
 
             nameInput.value = '';
@@ -826,10 +881,12 @@
             document.getElementById('editExGoal').value = ex.goal;
             
             document.getElementById('editModal').style.display = 'flex';
+            updateScrollLock();
         }
 
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
+            updateScrollLock();
         }
 
         function saveEdit() {
@@ -859,7 +916,7 @@
         // Start App
         initApp();
 
-        // --- REGISTRATION TOY SERVICE WORKER (OFFLINE MODE) ---
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
