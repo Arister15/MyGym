@@ -14,69 +14,53 @@
     <style>
         /* --- ULTRA MODERN iOS THEME (Red/Black/Charcoal) --- */
         :root {
-            /* Palette */
             --bg-main: #000000;
             --bg-secondary: #121212;
-            
-            /* Card Gradients for depth */
             --card-bg-top: #1F1F21;
             --card-bg-bottom: #18181A;
             --card-border: rgba(255, 255, 255, 0.08);
-
-            /* Text */
             --text-main: #FFFFFF;
             --text-sec: #98989E;
-            
-            /* Accents */
             --accent-red: #E62E25;
             --accent-red-glow: rgba(230, 46, 37, 0.3);
-            
-            /* Buttons */
             --btn-neutral: #2C2C2E;
             --btn-danger: #FF3B30;
+            color-scheme: dark;
         }
 
-        /* ΟΛΟΚΛΗΡΩΤΙΚΗ ΑΦΑΙΡΕΣΗ SCROLLBARS & ΛΕΥΚΩΝ ARTIFACTS */
+        /* ΑΠΟΚΛΕΙΣΜΟΣ SCROLLBARS */
         * {
             scrollbar-width: none !important;
             -ms-overflow-style: none !important;
         }
-        *::-webkit-scrollbar,
-        *::-webkit-scrollbar-thumb,
-        *::-webkit-scrollbar-track,
-        *::-webkit-scrollbar-corner {
+        *::-webkit-scrollbar {
             display: none !important;
             width: 0 !important;
             height: 0 !important;
-            background: transparent !important;
         }
 
-        /* ΑΠΟΛΥΤΟ ΚΛΕΙΔΩΜΑ CANVAS & OVERSCROLL */
+        /* ΔΙΟΡΘΩΣΗ VIEWPORT & ΕΞΑΦΑΝΙΣΗ ΛΕΥΚΟΥ ΚΕΝΟΥ iOS */
         html {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
             background-color: #000000 !important;
-            color-scheme: dark;
+            min-height: 100%;
+            min-height: -webkit-fill-available;
+            overscroll-behavior: none;
         }
         
         body {
-            height: 100%;
-            width: 100%;
-            overflow-x: hidden;
-            overflow-y: auto;
-            overscroll-behavior-y: contain;
-            -webkit-overflow-scrolling: touch;
-            background: #000000;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            background: #000000 !important;
             background-color: #000000 !important;
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px 20px calc(140px + env(safe-area-inset-bottom)) 20px;
+            padding: 20px 20px calc(120px + env(safe-area-inset-bottom)) 20px;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
             box-sizing: border-box;
+            overscroll-behavior-y: none;
         }
 
         body.modal-open {
@@ -293,7 +277,7 @@
 
         #resetBtn {
             position: fixed;
-            bottom: calc(35px + env(safe-area-inset-bottom));
+            bottom: calc(25px + env(safe-area-inset-bottom));
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, var(--btn-danger), #d62d24);
@@ -327,7 +311,6 @@
             border: 1px solid var(--card-border);
             backdrop-filter: blur(30px) saturate(180%);
             -webkit-backdrop-filter: blur(30px) saturate(180%);
-            
             width: 90%;
             max-width: 400px;
             max-height: 85vh;
@@ -914,6 +897,13 @@
                 closeEditModal();
             }
         }
+
+        // ΕΠΑΝΑΦΟΡΑ ΟΘΟΝΗΣ ΣΤΟ ΚΛΕΙΣΙΜΟ ΠΛΗΚΤΡΟΛΟΓΙΟΥ (ΕΞΑΦΑΝΙΖΕΙ ΤΟ ΛΕΥΚΟ ΚΕΝΟ)
+        document.addEventListener('focusout', (e) => {
+            if (e.target.tagName === 'INPUT') {
+                window.scrollTo(0, 0);
+            }
+        });
 
         // Start App
         initApp();
