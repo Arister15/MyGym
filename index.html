@@ -6,6 +6,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="GYM">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark">
     <link rel="manifest" href="manifest.json">
     <title>GYM</title>
     
@@ -34,18 +36,25 @@
             --btn-danger: #FF3B30;
         }
 
-        html, body {
+        /* ΑΠΟΛΥΤΟ ΚΛΕΙΔΩΜΑ CANVAS & OVERSCROLL (NO BOUNCE / NO WHITE SCREEN) */
+        html {
             height: 100%;
-            overflow-x: hidden;
-            overflow-y: auto;
-            scrollbar-width: none;
-            overscroll-behavior: none;
-            overscroll-behavior-y: none;
+            width: 100%;
+            overflow: hidden; /* Κλειδώνει το root viewport για να μην κάνει rubber-band */
+            background-color: #000000 !important; /* Εξαφανίζει την άσπρη οθόνη */
+            color-scheme: dark;
         }
         
         body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: auto; /* Το scroll περιορίζεται μόνο εντός του body */
+            overscroll-behavior-y: contain; /* Απαγορεύει την εξάπλωση του scroll έξω από το body */
+            -webkit-overflow-scrolling: touch;
             background: linear-gradient(to bottom, var(--bg-main) 0%, var(--bg-secondary) 100%);
             background-attachment: fixed;
+            background-color: #000000;
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
@@ -53,9 +62,6 @@
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
-            min-height: 100%;
-            overflow-x: hidden;
-            overflow-y: visible;
             box-sizing: border-box;
         }
 
@@ -904,7 +910,6 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').then((reg) => {
-                    // Έλεγχος για αλλαγές στο αρχείο sw.js κάθε φορά που φορτώνει η εφαρμογή
                     reg.update();
 
                     reg.onupdatefound = () => {
@@ -912,7 +917,6 @@
                         if (installingWorker) {
                             installingWorker.onstatechange = () => {
                                 if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    // Νέα έκδοση διαθέσιμη -> Αυτόματο Refresh
                                     window.location.reload();
                                 }
                             };
