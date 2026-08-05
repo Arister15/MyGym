@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-app-v4';
+const CACHE_NAME = 'gym-app-v5';
 const ASSETS = [
     './',
     'index.html',
@@ -6,16 +6,15 @@ const ASSETS = [
     'icon.png'
 ];
 
-// Εγκατάσταση του Service Worker και αποθήκευση των αρχείων στην Cache
+// Εγκατάσταση του Service Worker
 self.addEventListener('install', (e) => {
+    self.skipWaiting(); // Ενεργοποίηση αμέσως χωρίς αναμονή
     e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(ASSETS);
-        }).then(() => self.skipWaiting())
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
     );
 });
 
-// Ενεργοποίηση και καθαρισμός παλιών caches αν αλλάξει η έκδοση
+// Ενεργοποίηση & Διαγραφή παλιών caches
 self.addEventListener('activate', (e) => {
     e.waitUntil(
         caches.keys().then((keys) => {
@@ -26,18 +25,25 @@ self.addEventListener('activate', (e) => {
                     }
                 })
             );
-        }).then(() => self.clients.claim())
+        }).then(() => self.clients.claim()) // Αναλαμβάνει αμέσως τον έλεγχο όλων των ανοιχτών καρτελών
     );
 });
 
-// Στρατηγική Cache-First: Αν υπάρχει στην cache, φόρτωσε το από εκεί, αλλιώς κάνε network request
+// Στρατηγική Network-First (Έλεγχος για αλλαγές στο δίκτυο -> Fallback σε Cache αν είσαι Offline)
 self.addEventListener('fetch', (e) => {
     e.respondWith(
-        caches.match(e.request).then((cachedResponse) => {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-            return fetch(e.request);
-        })
+        fetch(e.request)
+            .then((networkResponse) => {
+                if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                    const responseToCache = networkResponse.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(e.request, responseToCache);
+                    });
+                }
+                return networkResponse;
+            })
+            .catch(() => {
+                return caches.match(e.request);
+            })
     );
 });
