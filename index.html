@@ -36,12 +36,27 @@
             --btn-danger: #FF3B30;
         }
 
-        /* ΑΠΟΛΥΤΟ ΚΛΕΙΔΩΜΑ CANVAS & OVERSCROLL (NO BOUNCE / NO WHITE SCREEN) */
+        /* ΟΛΟΚΛΗΡΩΤΙΚΗ ΑΦΑΙΡΕΣΗ SCROLLBARS & ΛΕΥΚΩΝ ARTIFACTS */
+        * {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+        *::-webkit-scrollbar,
+        *::-webkit-scrollbar-thumb,
+        *::-webkit-scrollbar-track,
+        *::-webkit-scrollbar-corner {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            background: transparent !important;
+        }
+
+        /* ΑΠΟΛΥΤΟ ΚΛΕΙΔΩΜΑ CANVAS & OVERSCROLL */
         html {
             height: 100%;
             width: 100%;
-            overflow: hidden; /* Κλειδώνει το root viewport για να μην κάνει rubber-band */
-            background-color: #000000 !important; /* Εξαφανίζει την άσπρη οθόνη */
+            overflow: hidden;
+            background-color: #000000 !important;
             color-scheme: dark;
         }
         
@@ -49,16 +64,15 @@
             height: 100%;
             width: 100%;
             overflow-x: hidden;
-            overflow-y: auto; /* Το scroll περιορίζεται μόνο εντός του body */
-            overscroll-behavior-y: contain; /* Απαγορεύει την εξάπλωση του scroll έξω από το body */
+            overflow-y: auto;
+            overscroll-behavior-y: contain;
             -webkit-overflow-scrolling: touch;
-            background: linear-gradient(to bottom, var(--bg-main) 0%, var(--bg-secondary) 100%);
-            background-attachment: fixed;
-            background-color: #000000;
+            background: #000000;
+            background-color: #000000 !important;
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px 20px 140px 20px;
+            padding: 20px 20px calc(140px + env(safe-area-inset-bottom)) 20px;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -69,8 +83,6 @@
             overflow: hidden !important;
             touch-action: none;
         }
-
-        body::-webkit-scrollbar { display: none; }
 
         .header-top {
             display: flex;
@@ -281,7 +293,7 @@
 
         #resetBtn {
             position: fixed;
-            bottom: 35px;
+            bottom: calc(35px + env(safe-area-inset-bottom));
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, var(--btn-danger), #d62d24);
