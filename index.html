@@ -14,33 +14,32 @@
         :root {
             /* Palette */
             --bg-main: #000000;
-            --bg-secondary: #121212; /* Deep Charcoal background gradient end */
+            --bg-secondary: #121212;
             
             /* Card Gradients for depth */
             --card-bg-top: #1F1F21;
             --card-bg-bottom: #18181A;
-            --card-border: rgba(255, 255, 255, 0.08); /* Subtle separation */
+            --card-border: rgba(255, 255, 255, 0.08);
 
             /* Text */
             --text-main: #FFFFFF;
-            --text-sec: #98989E; /* Slightly warmer gray */
+            --text-sec: #98989E;
             
             /* Accents */
-            --accent-red: #E62E25; /* Vibrant Apple-style Red */
+            --accent-red: #E62E25;
             --accent-red-glow: rgba(230, 46, 37, 0.3);
             
             /* Buttons */
             --btn-neutral: #2C2C2E;
-            --btn-danger: #FF3B30; /* Brighter red for destructive actions */
+            --btn-danger: #FF3B30;
         }
 
-        /* ΔΙΟΡΘΩΣΗ SCROLL & ΑΠΑΓΟΡΕΥΣΗ OVERSCROLL (RUBBER-BANDING) */
         html, body {
             height: 100%;
             overflow-x: hidden;
             overflow-y: auto;
-            scrollbar-width: none; /* Firefox */
-            overscroll-behavior: none; /* Σταματάει το scroll στα τέρμα όρια χωρίς bounce */
+            scrollbar-width: none;
+            overscroll-behavior: none;
             overscroll-behavior-y: none;
         }
         
@@ -60,15 +59,13 @@
             box-sizing: border-box;
         }
 
-        /* Κλείδωμα scroll πίσω οθόνης όταν είναι ανοιχτό κάποιο modal */
         body.modal-open {
             overflow: hidden !important;
             touch-action: none;
         }
 
-        body::-webkit-scrollbar { display: none; /* Safari/Chrome */ }
+        body::-webkit-scrollbar { display: none; }
 
-        /* Header Layout */
         .header-top {
             display: flex;
             justify-content: space-between;
@@ -102,10 +99,7 @@
         }
         #settingsBtn:active { background: rgba(60, 60, 64, 0.8); }
 
-        /* Progress Bar */
-        .progress-container {
-            margin-bottom: 35px;
-        }
+        .progress-container { margin-bottom: 35px; }
         .progress-bar-bg {
             background-color: var(--btn-neutral);
             border-radius: 20px;
@@ -130,7 +124,6 @@
             letter-spacing: 0.3px;
         }
 
-        /* Exercise Cards */
         #exerciseList {
             display: flex;
             flex-direction: column;
@@ -173,9 +166,7 @@
             gap: 8px;
             transition: color 0.3s;
         }
-        .card.completed .exercise-name {
-            color: var(--accent-red);
-        }
+        .card.completed .exercise-name { color: var(--accent-red); }
 
         .checkmark { display: none; color: var(--accent-red); }
         .card.completed .checkmark { display: inline-block; }
@@ -195,7 +186,6 @@
             gap: 14px;
         }
 
-        /* Buttons */
         button {
             border: none;
             outline: none;
@@ -234,7 +224,6 @@
              opacity: 0.5;
         }
 
-        /* --- SET TRACKING SYSTEM --- */
         .tracker-container {
             border-top: 1px solid var(--card-border);
             padding-top: 16px;
@@ -284,7 +273,6 @@
         }
         .tracker-btn:active { opacity: 0.7; }
 
-        /* Reset Button */
         #resetBtn {
             position: fixed;
             bottom: 35px;
@@ -304,7 +292,6 @@
         }
         #resetBtn:active { transform: translateX(-50%) scale(0.96); }
 
-        /* --- MODALS (Glassmorphism) --- */
         .modal {
             display: none;
             position: fixed;
@@ -351,7 +338,6 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* Inputs & Forms */
         input {
             background: rgba(0,0,0,0.2);
             border: 1px solid var(--card-border);
@@ -394,7 +380,6 @@
 
         .modal-actions { display: flex; gap: 12px; margin-top: 15px; }
 
-        /* Settings Exercise List */
         .settings-list {
             display: flex;
             flex-direction: column;
@@ -403,7 +388,7 @@
             margin-top: 15px;
             padding-bottom: 20px;
             touch-action: pan-y;
-            overscroll-behavior: contain; /* Απαγόρευση scroll έξω από τη λίστα settings */
+            overscroll-behavior: contain;
         }
         .set-item {
             background: rgba(44, 44, 46, 0.6);
@@ -419,7 +404,6 @@
             transition: transform 0.15s ease, background 0.2s, border-color 0.2s;
         }
 
-        /* POINTER-EVENTS NONE: ΚΡΙΣΙΜΟ ΓΙΑ ΝΑ ΜΗΝ LagΑΡΕΙ ΤΟ ELEMENT FROM POINT ΟΤΑΝ ΣΥΡΕΙΣ ΠΡΟΣ ΤΑ ΠΑΝΩ */
         .set-item.dragging {
             opacity: 0.8;
             transform: scale(1.02);
@@ -505,7 +489,6 @@
 
     <script>
         /* --- CORE DATA & LOGIC --- */
-        
         const initialExercises = [
             { id: 1, name: "Flat Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
             { id: 2, name: "Incline Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
@@ -530,7 +513,6 @@
             if (navigator.vibrate) navigator.vibrate(50);
         }
 
-        /* --- LOCK BACKGROUND SCROLL --- */
         function updateScrollLock() {
             const settingsOpen = document.getElementById('settingsModal').style.display === 'flex';
             const editOpen = document.getElementById('editModal').style.display === 'flex';
@@ -566,8 +548,6 @@
             }
         }
 
-        /* --- DASHBOARD LOGIC --- */
-
         function addSet(id) {
             triggerHaptic();
             const ex = exercises.find(e => e.id === id);
@@ -595,8 +575,6 @@
                 saveData();
             }
         }
-
-        /* --- LOGGING LOGIC --- */
 
         function updateLog(exId, logIndex, field, value) {
             const ex = exercises.find(e => e.id === exId);
@@ -689,7 +667,6 @@
         }
 
         /* --- SETTINGS LOGIC & DYNAMIC AUTO-SCROLL DRAG AND DROP --- */
-
         let activeDragItem = null;
         let longPressTimer = null;
         let startY = 0;
@@ -714,7 +691,7 @@
                     if (!autoScrollFrame) {
                         autoScrollFrame = requestAnimationFrame(doAutoScroll);
                     }
-                }, 400); // 400ms παρατεταμένο πάτημα
+                }, 400);
             };
 
             item.addEventListener('touchstart', handleStart, { passive: true });
@@ -734,7 +711,6 @@
             }
         }
 
-        /* ΑΥΤΟΜΑΤΟ SCROLL ΜΕ ΔΥΝΑΜΙΚΗ ΤΑΧΥΤΗΤΑ ΑΝΑΛΟΓΑ ΜΕ ΤΗ ΘΕΣΗ ΤΟΥ ΔΑΧΤΥΛΟΥ */
         function doAutoScroll() {
             if (!activeDragItem) {
                 autoScrollFrame = null;
@@ -744,18 +720,16 @@
             const list = document.getElementById('settingsExerciseList');
             if (list) {
                 const rect = list.getBoundingClientRect();
-                const threshold = 65; // Περιοχή ευαισθησίας στα άκρα (σε pixels)
-                const maxSpeed = 16;  // Μέγιστη ταχύτητα scroll
+                const threshold = 65;
+                const maxSpeed = 16;
 
                 let scrollDelta = 0;
 
                 if (currentTouchY < rect.top + threshold) {
-                    // Scroll προς τα πάνω: Όσο πιο κοντά/πάνω από το όριο, τόσο πιο γρήγορα
                     const distance = (rect.top + threshold) - currentTouchY;
                     const intensity = Math.min(1.5, Math.max(0.1, distance / threshold));
                     scrollDelta = -Math.round(intensity * maxSpeed);
                 } else if (currentTouchY > rect.bottom - threshold) {
-                    // Scroll προς τα κάτω: Όσο πιο κοντά/κάτω από το όριο, τόσο πιο γρήγορα
                     const distance = currentTouchY - (rect.bottom - threshold);
                     const intensity = Math.min(1.5, Math.max(0.1, distance / threshold));
                     scrollDelta = Math.round(intensity * maxSpeed);
@@ -882,8 +856,6 @@
             }
         }
 
-        /* --- EDIT LOGIC --- */
-
         function openEditModal(id) {
             const ex = exercises.find(e => e.id === id);
             if (!ex) return;
@@ -928,12 +900,33 @@
         // Start App
         initApp();
 
-        // Service Worker Registration
+        /* --- ΑΥΤΟΜΑΤΗ ΕΝΗΜΕΡΩΣΗ SERVICE WORKER & RELOAD --- */
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker registered with success!', reg))
-                    .catch(err => console.log('Service Worker registration failed.', err));
+                navigator.serviceWorker.register('./sw.js').then((reg) => {
+                    // Έλεγχος για αλλαγές στο αρχείο sw.js κάθε φορά που φορτώνει η εφαρμογή
+                    reg.update();
+
+                    reg.onupdatefound = () => {
+                        const installingWorker = reg.installing;
+                        if (installingWorker) {
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Νέα έκδοση διαθέσιμη -> Αυτόματο Refresh
+                                    window.location.reload();
+                                }
+                            };
+                        }
+                    };
+                });
+
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (!refreshing) {
+                        refreshing = true;
+                        window.location.reload();
+                    }
+                });
             });
         }
     </script>
