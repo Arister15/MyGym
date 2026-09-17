@@ -727,7 +727,7 @@
 
     <!-- FLOATING REST TIMER WIDGET (10s Test + 120s Main) -->
     <div id="restTimerWidget" class="rest-timer-widget">
-        <button id="timerTestBtn" class="timer-test-btn" onclick="startRestTimer(10)" aria-label="10s Test Timer" title="10s Test">
+        <button id="timerTestBtn" class="timer-test-btn" onclick="requestNotificationAndStart(10)" aria-label="10s Test Timer" title="10s Test">
             10s
         </button>
         <button id="timerMainBtn" class="timer-main-btn" onclick="handleTimerClick()" aria-label="Rest Timer">
@@ -827,14 +827,41 @@
             if (navigator.vibrate) navigator.vibrate(40);
         }
 
-        /* --- REST TIMER LOGIC --- */
+        /* --- REST TIMER & NOTIFICATIONS FOR IOS --- */
         let activeTimerTotal = 120;
         let timerInterval = null;
         let timerEndTime = null;
 
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
         function triggerTimerFinishedAlert() {
+            // Δόνηση για Android / Browsers που την υποστηρίζουν
             if (navigator.vibrate) {
-                navigator.vibrate([300, 150, 300, 150, 500, 150, 500]);
+                navigator.vibrate([300, 150, 300, 150, 500]);
+            }
+
+            // Ειδοποίηση iOS (Προκαλεί τη δόνηση του συστήματος)
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const title = "GYM - Rest Over!";
+                const options = {
+                    body: "Ο χρόνος ξεκούρασης τελείωσε. Πάμε για το επόμενο σετ!",
+                    tag: "gym-rest-timer",
+                    renotify: true
+                };
+
+                if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.showNotification(title, options);
+                    }).catch(() => {
+                        new Notification(title, options);
+                    });
+                } else {
+                    new Notification(title, options);
+                }
             }
         }
 
@@ -846,6 +873,8 @@
 
         function handleTimerClick() {
             triggerHaptic();
+            requestNotificationPermission();
+
             const btn = document.getElementById('timerMainBtn');
             if (btn.classList.contains('finished')) {
                 stopTimer();
@@ -854,8 +883,13 @@
             startRestTimer(120);
         }
 
-        function startRestTimer(duration = 120) {
+        function requestNotificationAndStart(seconds) {
             triggerHaptic();
+            requestNotificationPermission();
+            startRestTimer(seconds);
+        }
+
+        function startRestTimer(duration = 120) {
             clearInterval(timerInterval);
             activeTimerTotal = duration;
 
@@ -884,6 +918,7 @@
                     btn.classList.remove('running');
                     btn.classList.add('finished');
                     display.innerText = '0:00';
+                    
                     triggerTimerFinishedAlert();
 
                     setTimeout(() => {
@@ -929,7 +964,6 @@
                 ex.logs[logIndex].r = newVal;
                 localStorage.setItem('gymData', JSON.stringify(exercises));
 
-                // Direct DOM update for instant reaction
                 const inputEl = document.querySelector(`.rep-input[data-ex="${exId}"][data-idx="${logIndex}"]`);
                 if (inputEl) {
                     inputEl.value = newVal;
