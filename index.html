@@ -293,20 +293,28 @@
         .tracker-row {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .tracker-label {
             color: var(--text-sec);
             font-size: 13px;
-            width: 44px;
-            font-weight: 600;
+            width: 24px;
+            font-weight: 700;
             font-variant-numeric: tabular-nums;
+            flex-shrink: 0;
+            text-align: left;
+        }
+        .tracker-sep {
+            color: var(--text-sec);
+            font-weight: bold;
+            font-size: 13px;
+            flex-shrink: 0;
         }
         .tracker-input {
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--card-border);
             color: white;
-            padding: 9px 12px;
+            padding: 9px 8px;
             border-radius: 12px;
             font-size: 15px;
             font-weight: 600;
@@ -323,6 +331,35 @@
         }
         .tracker-input::placeholder { color: rgba(142, 142, 147, 0.4); }
         
+        .rep-input-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+        }
+        .rep-plus-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            width: 36px;
+            height: 38px;
+            border-radius: 11px;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.15s, border-color 0.15s, color 0.15s;
+        }
+        .rep-plus-btn:active {
+            transform: scale(0.88);
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            color: #FFFFFF;
+        }
+
         .tracker-actions {
             display: flex;
             justify-content: flex-end;
@@ -340,15 +377,36 @@
         }
         .tracker-btn:active { transform: scale(0.94); background: rgba(255,255,255,0.12); }
 
-        /* --- FLOATING GLASS REST TIMER (120s) --- */
+        /* --- FLOATING REST TIMER WIDGET --- */
         .rest-timer-widget {
             position: fixed;
             bottom: calc(78px + env(safe-area-inset-bottom));
             right: 18px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
             z-index: 92;
+        }
+
+        .timer-test-btn {
+            background: rgba(26, 26, 28, 0.85);
+            backdrop-filter: blur(25px) saturate(190%);
+            -webkit-backdrop-filter: blur(25px) saturate(190%);
+            border: 1px dashed rgba(255, 59, 48, 0.5);
+            border-radius: 20px;
+            padding: 9px 12px;
+            color: var(--accent-red-bright);
+            font-size: 13px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+            transition: transform 0.15s, background 0.2s, border-color 0.2s;
+        }
+        .timer-test-btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 59, 48, 0.2);
         }
 
         .timer-main-btn {
@@ -667,8 +725,11 @@
 
     <main id="exerciseList"></main>
 
-    <!-- FLOATING REST TIMER (120s) -->
+    <!-- FLOATING REST TIMER WIDGET (10s Test + 120s Main) -->
     <div id="restTimerWidget" class="rest-timer-widget">
+        <button id="timerTestBtn" class="timer-test-btn" onclick="startRestTimer(10)" aria-label="10s Test Timer" title="10s Test">
+            10s
+        </button>
         <button id="timerMainBtn" class="timer-main-btn" onclick="handleTimerClick()" aria-label="Rest Timer">
             <svg class="timer-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
@@ -766,42 +827,15 @@
             if (navigator.vibrate) navigator.vibrate(40);
         }
 
-        /* --- 120s REST TIMER LOGIC --- */
-        const TIMER_DURATION = 120; // 120 δευτερόλεπτα
+        /* --- REST TIMER LOGIC --- */
+        let activeTimerTotal = 120;
         let timerInterval = null;
         let timerEndTime = null;
-        let audioCtx = null;
-
-        function playBeepSound() {
-            try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                const now = audioCtx.currentTime;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                // Διπλός καθαρός τόνος ειδοποίησης
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, now);
-                osc.frequency.setValueAtTime(1174.66, now + 0.15);
-                
-                gain.gain.setValueAtTime(0.35, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-                
-                osc.start(now);
-                osc.stop(now + 0.6);
-            } catch (e) {}
-        }
 
         function triggerTimerFinishedAlert() {
-            // Έντονο μοτίβο δόνησης (Buzz - Pause - Buzz - Pause - Long Buzz)
             if (navigator.vibrate) {
                 navigator.vibrate([300, 150, 300, 150, 500, 150, 500]);
             }
-            playBeepSound();
         }
 
         function formatTimerDisplay(seconds) {
@@ -811,24 +845,20 @@
         }
 
         function handleTimerClick() {
-            // Unlock audio context με το gesture του χρήστη (απαραίτητο για iOS)
-            if (!audioCtx) {
-                try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e){}
-            }
             triggerHaptic();
-
             const btn = document.getElementById('timerMainBtn');
             if (btn.classList.contains('finished')) {
                 stopTimer();
                 return;
             }
-
-            // Ξεκίνημα ή άμεσο Restart στα 120s
-            startRestTimer();
+            startRestTimer(120);
         }
 
-        function startRestTimer() {
+        function startRestTimer(duration = 120) {
+            triggerHaptic();
             clearInterval(timerInterval);
+            activeTimerTotal = duration;
+
             const widget = document.getElementById('restTimerWidget');
             const btn = document.getElementById('timerMainBtn');
             const fill = document.getElementById('timerProgressFill');
@@ -838,14 +868,14 @@
             btn.classList.remove('finished');
             btn.classList.add('running');
 
-            timerEndTime = Date.now() + TIMER_DURATION * 1000;
+            timerEndTime = Date.now() + duration * 1000;
 
             function tick() {
                 const now = Date.now();
                 const leftSeconds = Math.max(0, Math.ceil((timerEndTime - now) / 1000));
                 display.innerText = formatTimerDisplay(leftSeconds);
 
-                const percent = ((TIMER_DURATION - leftSeconds) / TIMER_DURATION) * 100;
+                const percent = ((activeTimerTotal - leftSeconds) / activeTimerTotal) * 100;
                 fill.style.width = `${percent}%`;
 
                 if (leftSeconds <= 0) {
@@ -856,7 +886,6 @@
                     display.innerText = '0:00';
                     triggerTimerFinishedAlert();
 
-                    // Αυτόματο reset μετά από 4 δευτερόλεπτα
                     setTimeout(() => {
                         if (!timerInterval && btn.classList.contains('finished')) {
                             stopTimer();
@@ -885,6 +914,29 @@
             btn.classList.remove('running', 'finished');
             fill.style.width = '0%';
             display.innerText = '2:00';
+        }
+
+        /* --- QUICK REP INCREMENT --- */
+        function quickAddRep(exId, logIndex) {
+            triggerHaptic();
+            const ex = exercises.find(e => e.id === exId);
+            if (ex && ex.logs[logIndex]) {
+                let currentVal = parseInt(ex.logs[logIndex].r);
+                if (isNaN(currentVal) || currentVal < 0) {
+                    currentVal = 0;
+                }
+                const newVal = (currentVal + 1).toString();
+                ex.logs[logIndex].r = newVal;
+                localStorage.setItem('gymData', JSON.stringify(exercises));
+
+                // Direct DOM update for instant reaction
+                const inputEl = document.querySelector(`.rep-input[data-ex="${exId}"][data-idx="${logIndex}"]`);
+                if (inputEl) {
+                    inputEl.value = newVal;
+                } else {
+                    renderUI();
+                }
+            }
         }
 
         function updateScrollLock() {
@@ -1040,10 +1092,13 @@
                 ex.logs.forEach((log, index) => {
                     logsHtml += `
                         <div class="tracker-row">
-                            <span class="tracker-label">Set ${index + 1}</span>
+                            <span class="tracker-label">S${index + 1}</span>
                             <input type="text" inputmode="decimal" class="tracker-input" placeholder="kg" value="${log.w}" oninput="this.value = this.value.replace(',', '.'); updateLog(${ex.id}, ${index}, 'w', this.value)">
-                            <span style="color: var(--text-sec); font-weight: bold; font-size: 13px;">×</span>
-                            <input type="text" inputmode="decimal" class="tracker-input" placeholder="reps" value="${log.r}" oninput="this.value = this.value.replace(',', '.'); updateLog(${ex.id}, ${index}, 'r', this.value)">
+                            <span class="tracker-sep">×</span>
+                            <div class="rep-input-group">
+                                <input type="text" inputmode="decimal" class="tracker-input rep-input" data-ex="${ex.id}" data-idx="${index}" placeholder="reps" value="${log.r}" oninput="this.value = this.value.replace(',', '.'); updateLog(${ex.id}, ${index}, 'r', this.value)">
+                                <button type="button" class="rep-plus-btn" onclick="quickAddRep(${ex.id}, ${index})" aria-label="Add Rep">+</button>
+                            </div>
                         </div>
                     `;
                 });
