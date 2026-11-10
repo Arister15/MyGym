@@ -23,7 +23,7 @@
             --text-sec: #8E8E93;
             --accent-red: #FF3B30;
             --accent-red-glow: rgba(255, 59, 48, 0.45);
-            --accent-red-bright: #FF5247;
+            --accent-red-bright: #FF554B;
             --btn-neutral: #242426;
             --btn-danger: #FF3B30;
             color-scheme: dark;
@@ -55,7 +55,7 @@
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px 20px calc(130px + env(safe-area-inset-bottom)) 20px;
+            padding: 20px 20px calc(140px + env(safe-area-inset-bottom)) 20px;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -197,24 +197,40 @@
             gap: 22px;
         }
 
-        /* --- MUSCLE GROUP SECTIONS --- */
+        /* --- MUSCLE GROUP SECTIONS WITH STICKY GLASS HEADER --- */
         .muscle-group-section {
             display: flex;
             flex-direction: column;
+            position: relative;
         }
         .muscle-group-header {
+            position: sticky;
+            top: 0;
+            z-index: 15;
             display: flex;
             justify-content: space-between;
             align-items: baseline;
-            padding: 4px 6px 12px 6px;
+            padding: 10px 8px 10px 8px;
+            margin: 0 -8px 8px -8px;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
         }
+
+        /* --- ENHANCED NEON GLOW TITLES --- */
         .group-header-title {
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: 0.8px;
+            font-size: 16.5px;
+            font-weight: 900;
+            letter-spacing: 0.9px;
             text-transform: uppercase;
             color: var(--accent-red-bright);
-            text-shadow: 0 0 14px rgba(255, 59, 48, 0.45);
+            text-shadow: 
+                0 0 8px rgba(255, 85, 75, 0.95),
+                0 0 18px rgba(255, 59, 48, 0.75),
+                0 0 32px rgba(255, 59, 48, 0.5),
+                0 0 45px rgba(255, 59, 48, 0.3);
         }
         .group-header-badge {
             font-size: 12.5px;
@@ -477,6 +493,18 @@
         }
         .tracker-btn:active { transform: scale(0.94); background: rgba(255,255,255,0.12); }
 
+        /* --- BOTTOM GRADIENT EDGE FADE --- */
+        .bottom-edge-fade {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 125px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 15%, rgba(0, 0, 0, 0.75) 45%, rgba(0, 0, 0, 0) 100%);
+            pointer-events: none;
+            z-index: 85;
+        }
+
         /* --- FLOATING REST TIMER WIDGET (120s Silent) --- */
         .rest-timer-widget {
             position: fixed;
@@ -639,48 +667,72 @@
             box-shadow: 0 0 10px var(--accent-red-glow);
         }
 
-        /* --- MODAL DIALOGS --- */
+        /* --- iOS BOTTOM SHEETS --- */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.72);
             z-index: 100;
             justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            align-items: flex-end;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            animation: fadeInOverlay 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
-            background: rgba(28, 28, 30, 0.90);
+            background: rgba(26, 26, 28, 0.94);
             border: 1px solid var(--card-border);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            width: 90%;
-            max-width: 400px;
-            max-height: 85vh;
-            border-radius: 26px;
-            padding: 24px;
+            border-bottom: none;
+            backdrop-filter: blur(35px) saturate(190%);
+            -webkit-backdrop-filter: blur(35px) saturate(190%);
+            width: 100%;
+            max-width: 480px;
+            max-height: 86vh;
+            border-radius: 28px 28px 0 0;
+            padding: 10px 22px calc(24px + env(safe-area-inset-bottom)) 22px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 13px;
             box-sizing: border-box;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            box-shadow: 0 -12px 45px rgba(0,0,0,0.7);
+            animation: slideUpSheet 0.32s cubic-bezier(0.18, 0.95, 0.26, 1);
+            position: relative;
+        }
+
+        @keyframes slideUpSheet {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .sheet-handle {
+            width: 40px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 4px;
+            margin: 2px auto 6px auto;
+            flex-shrink: 0;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 2px;
         }
-        .modal-header h2 { margin: 0; font-size: 24px; font-weight: 800; }
+        .modal-header h2 { margin: 0; font-size: 22px; font-weight: 800; }
         .close-btn {
             background: var(--btn-neutral);
             color: var(--text-sec);
             border-radius: 50%;
             width: 32px; height: 32px;
-            font-size: 17px;
+            font-size: 16px;
             display: flex; justify-content: center; align-items: center;
         }
 
@@ -689,7 +741,7 @@
             font-size: 13px;
             color: var(--text-sec);
             margin-bottom: -6px;
-            margin-top: 4px;
+            margin-top: 2px;
             letter-spacing: 0.4px;
             text-transform: uppercase;
         }
@@ -768,15 +820,16 @@
             box-shadow: none; 
         }
 
-        .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 6px; }
 
         .settings-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
             overflow-y: auto;
+            max-height: 40vh;
             margin-top: 4px;
-            padding-bottom: 10px;
+            padding-bottom: 6px;
             touch-action: pan-y;
             overscroll-behavior: contain;
         }
@@ -866,6 +919,9 @@
 
     <main id="exerciseList"></main>
 
+    <!-- BOTTOM GRADIENT EDGE FADE -->
+    <div class="bottom-edge-fade"></div>
+
     <!-- FLOATING REST TIMER WIDGET (120s Silent) -->
     <div id="restTimerWidget" class="rest-timer-widget">
         <button id="timerMainBtn" class="timer-main-btn" onclick="handleTimerClick()" aria-label="Rest Timer">
@@ -894,9 +950,10 @@
         </button>
     </nav>
 
-    <!-- SETTINGS MODAL -->
-    <div id="settingsModal" class="modal">
+    <!-- SETTINGS BOTTOM SHEET -->
+    <div id="settingsModal" class="modal" onclick="if(event.target === this) closeSettings()">
         <div class="modal-content">
+            <div class="sheet-handle"></div>
             <div class="modal-header">
                 <h2>Settings</h2>
                 <button onclick="closeSettings()" class="close-btn">✕</button>
@@ -921,7 +978,7 @@
 
             <div class="settings-list" id="settingsExerciseList"></div>
 
-            <div style="border-top: 1px solid var(--card-border); padding-top: 12px; margin-top: 4px;">
+            <div style="border-top: 1px solid var(--card-border); padding-top: 10px; margin-top: 2px;">
                 <button onclick="resetWeek()" class="action-btn danger" style="width: 100%;">
                     ↺ Reset Weekly Progress
                 </button>
@@ -929,9 +986,10 @@
         </div>
     </div>
 
-    <!-- EDIT MODAL -->
-    <div id="editModal" class="modal">
+    <!-- EDIT BOTTOM SHEET -->
+    <div id="editModal" class="modal" onclick="if(event.target === this) closeEditModal()">
         <div class="modal-content">
+            <div class="sheet-handle"></div>
             <div class="modal-header">
                 <h2>Edit Exercise</h2>
             </div>
@@ -1067,7 +1125,6 @@
                     btn.classList.add('finished');
                     display.innerText = '0:00';
                     
-                    // Αθόρυβο τέλος - κανένα notification ή ήχος
                     setTimeout(() => {
                         if (!timerInterval && btn.classList.contains('finished')) {
                             stopTimer();
@@ -1312,7 +1369,7 @@
             }
         }
 
-        /* --- MAIN UI RENDER WITH GROUP SECTIONS --- */
+        /* --- MAIN UI RENDER WITH GROUP SECTIONS & STICKY HEADERS --- */
         function renderUI() {
             const currentScroll = window.scrollY;
             const listContainer = document.getElementById('exerciseList');
