@@ -55,7 +55,7 @@
             color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px 20px calc(140px + env(safe-area-inset-bottom)) 20px;
+            padding: calc(14px + env(safe-area-inset-top, 0px)) 20px calc(140px + env(safe-area-inset-bottom)) 20px;
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -67,11 +67,25 @@
             touch-action: none;
         }
 
+        /* --- STATUS BAR TOP SCRIM (Προστασία από επικάλυψη με ώρα/μπαταρία) --- */
+        .status-bar-scrim {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: calc(env(safe-area-inset-top, 0px) + 6px);
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            z-index: 40;
+            pointer-events: none;
+        }
+
         .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 25px 0 16px 0;
+            margin: 12px 0 16px 0;
         }
 
         h1 {
@@ -197,7 +211,7 @@
             gap: 22px;
         }
 
-        /* --- MUSCLE GROUP SECTIONS WITH STICKY GLASS HEADER --- */
+        /* --- MUSCLE GROUP SECTIONS WITH STICKY HEADER BELOW CLOCK --- */
         .muscle-group-section {
             display: flex;
             flex-direction: column;
@@ -205,7 +219,7 @@
         }
         .muscle-group-header {
             position: sticky;
-            top: 0;
+            top: calc(env(safe-area-inset-top, 0px) + 6px);
             z-index: 15;
             display: flex;
             justify-content: space-between;
@@ -667,7 +681,7 @@
             box-shadow: 0 0 10px var(--accent-red-glow);
         }
 
-        /* --- iOS BOTTOM SHEETS --- */
+        /* --- iOS BOTTOM SHEETS WITH SLIDE UP / SLIDE DOWN --- */
         .modal {
             display: none;
             position: fixed;
@@ -678,12 +692,21 @@
             align-items: flex-end;
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            animation: fadeInOverlay 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+            animation: fadeInOverlay 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .modal.closing {
+            animation: fadeOutOverlay 0.25s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
         }
 
         @keyframes fadeInOverlay {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        @keyframes fadeOutOverlay {
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
 
         .modal-content {
@@ -696,7 +719,7 @@
             max-width: 480px;
             max-height: 86vh;
             border-radius: 28px 28px 0 0;
-            padding: 10px 22px calc(24px + env(safe-area-inset-bottom)) 22px;
+            padding: 4px 22px calc(24px + env(safe-area-inset-bottom)) 22px;
             display: flex;
             flex-direction: column;
             gap: 13px;
@@ -704,6 +727,11 @@
             box-shadow: 0 -12px 45px rgba(0,0,0,0.7);
             animation: slideUpSheet 0.32s cubic-bezier(0.18, 0.95, 0.26, 1);
             position: relative;
+            touch-action: pan-y;
+        }
+
+        .modal.closing .modal-content {
+            animation: slideDownSheet 0.25s cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
         }
 
         @keyframes slideUpSheet {
@@ -711,13 +739,37 @@
             to { transform: translateY(0); }
         }
 
+        @keyframes slideDownSheet {
+            from { transform: translateY(0); }
+            to { transform: translateY(100%); }
+        }
+
+        /* DRAGGABLE PULL HANDLE AREA */
+        .sheet-handle-area {
+            width: 100%;
+            padding: 8px 0 10px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .sheet-handle-area:active {
+            cursor: grabbing;
+        }
         .sheet-handle {
-            width: 40px;
+            width: 42px;
             height: 5px;
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.30);
             border-radius: 4px;
-            margin: 2px auto 6px auto;
-            flex-shrink: 0;
+            pointer-events: none;
+            transition: background-color 0.2s, transform 0.2s;
+        }
+        .sheet-handle-area:active .sheet-handle {
+            background: rgba(255, 255, 255, 0.55);
+            transform: scaleX(1.1);
         }
 
         .modal-header {
@@ -725,6 +777,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2px;
+            cursor: grab;
+            touch-action: none;
         }
         .modal-header h2 { margin: 0; font-size: 22px; font-weight: 800; }
         .close-btn {
@@ -734,6 +788,7 @@
             width: 32px; height: 32px;
             font-size: 16px;
             display: flex; justify-content: center; align-items: center;
+            cursor: pointer;
         }
 
         .modal-label {
@@ -827,7 +882,7 @@
             flex-direction: column;
             gap: 10px;
             overflow-y: auto;
-            max-height: 40vh;
+            max-height: 38vh;
             margin-top: 4px;
             padding-bottom: 6px;
             touch-action: pan-y;
@@ -891,6 +946,9 @@
 </head>
 <body>
 
+    <!-- TOP STATUS BAR SCRIM -->
+    <div class="status-bar-scrim"></div>
+
     <header>
         <div class="header-top">
             <h1>GYM</h1>
@@ -952,8 +1010,10 @@
 
     <!-- SETTINGS BOTTOM SHEET -->
     <div id="settingsModal" class="modal" onclick="if(event.target === this) closeSettings()">
-        <div class="modal-content">
-            <div class="sheet-handle"></div>
+        <div class="modal-content" id="settingsSheet">
+            <div class="sheet-handle-area">
+                <div class="sheet-handle"></div>
+            </div>
             <div class="modal-header">
                 <h2>Settings</h2>
                 <button onclick="closeSettings()" class="close-btn">✕</button>
@@ -988,8 +1048,10 @@
 
     <!-- EDIT BOTTOM SHEET -->
     <div id="editModal" class="modal" onclick="if(event.target === this) closeEditModal()">
-        <div class="modal-content">
-            <div class="sheet-handle"></div>
+        <div class="modal-content" id="editSheet">
+            <div class="sheet-handle-area">
+                <div class="sheet-handle"></div>
+            </div>
             <div class="modal-header">
                 <h2>Edit Exercise</h2>
             </div>
@@ -1052,7 +1114,7 @@
 
         let exercises = [];
         let currentFilter = 'all';          // 'all', 'pending', 'completed'
-        let selectedGroups = new Set();     // Άδειο Set σημαίνει 'Όλες'
+        let selectedGroups = new Set();     // Άδειο Set σημαίνει 'All'
         let expandedExerciseIds = new Set(); 
 
         function triggerHaptic() {
@@ -1178,10 +1240,12 @@
         }
 
         function updateScrollLock() {
-            const settingsOpen = document.getElementById('settingsModal').style.display === 'flex';
-            const editOpen = document.getElementById('editModal').style.display === 'flex';
+            const settingsModal = document.getElementById('settingsModal');
+            const editModal = document.getElementById('editModal');
+            const isSettingsOpen = settingsModal && settingsModal.style.display === 'flex' && !settingsModal.classList.contains('closing');
+            const isEditOpen = editModal && editModal.style.display === 'flex' && !editModal.classList.contains('closing');
             
-            if (settingsOpen || editOpen) {
+            if (isSettingsOpen || isEditOpen) {
                 document.body.classList.add('modal-open');
             } else {
                 document.body.classList.remove('modal-open');
@@ -1204,6 +1268,8 @@
                 exercises = JSON.parse(JSON.stringify(initialExercises));
             }
             initDragAndDropListeners();
+            setupSheetDrag('settingsModal', closeSettings);
+            setupSheetDrag('editModal', closeEditModal);
             renderGroupFilter();
             renderUI();
         }
@@ -1239,7 +1305,7 @@
             renderUI();
         }
 
-        /* --- MULTI-SELECT MUSCLE GROUP FILTER LOGIC --- */
+        /* --- MULTI-SELECT MUSCLE GROUP FILTER LOGIC (ENGLISH 'ALL') --- */
         function renderGroupFilter() {
             const track = document.getElementById('groupFilterTrack');
             if (!track) return;
@@ -1248,7 +1314,7 @@
 
             let html = `
                 <button class="group-filter-chip ${isAll ? 'active' : ''}" id="group-chip-all" onclick="toggleGroupFilter('all')">
-                    <span>Όλες</span>
+                    <span>All</span>
                     <span class="group-chip-count" id="chip-count-all">${exercises.length}</span>
                 </button>
             `;
@@ -1369,7 +1435,7 @@
             }
         }
 
-        /* --- MAIN UI RENDER WITH GROUP SECTIONS & STICKY HEADERS --- */
+        /* --- MAIN UI RENDER WITH GROUP SECTIONS & BELOW-CLOCK STICKY HEADERS --- */
         function renderUI() {
             const currentScroll = window.scrollY;
             const listContainer = document.getElementById('exerciseList');
@@ -1502,8 +1568,8 @@
             if (renderedSectionsCount === 0) {
                 listContainer.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-title">Δεν βρέθηκαν ασκήσεις</div>
-                        <div class="empty-sub">Δεν υπάρχουν ασκήσεις για τα επιλεγμένα φίλτρα.</div>
+                        <div class="empty-title">No exercises found</div>
+                        <div class="empty-sub">No exercises match the selected filters.</div>
                     </div>
                 `;
             }
@@ -1645,16 +1711,160 @@
             window.addEventListener('mouseup', handleEnd);
         }
 
+        /* --- INTERACTIVE PULL HANDLE & SWIPE DOWN TO DISMISS --- */
+        function setupSheetDrag(modalId, closeFn) {
+            const modal = document.getElementById(modalId);
+            if (!modal) return;
+            const content = modal.querySelector('.modal-content');
+            const handleArea = modal.querySelector('.sheet-handle-area');
+            const header = modal.querySelector('.modal-header');
+
+            let dragStartY = 0;
+            let dragCurrentY = 0;
+            let isSheetDragging = false;
+            let dragStartTime = 0;
+
+            function onStart(e) {
+                if (e.target.closest('button') || e.target.closest('input') || e.target.closest('select')) return;
+                const pt = e.touches ? e.touches[0] : e;
+                dragStartY = pt.clientY;
+                dragCurrentY = dragStartY;
+                isSheetDragging = true;
+                dragStartTime = Date.now();
+                content.style.transition = 'none';
+                modal.style.transition = 'none';
+            }
+
+            function onMove(e) {
+                if (!isSheetDragging) return;
+                const pt = e.touches ? e.touches[0] : e;
+                dragCurrentY = pt.clientY;
+                const deltaY = dragCurrentY - dragStartY;
+
+                if (deltaY > 0) {
+                    if (e.cancelable) e.preventDefault();
+                    content.style.transform = `translateY(${deltaY}px)`;
+                    const opacity = Math.max(0, 0.72 * (1 - deltaY / 400));
+                    modal.style.backgroundColor = `rgba(0, 0, 0, ${opacity})`;
+                } else {
+                    // Διακριτικό elastic resistance στο τράβηγμα προς τα πάνω
+                    content.style.transform = `translateY(${deltaY * 0.16}px)`;
+                }
+            }
+
+            function onEnd() {
+                if (!isSheetDragging) return;
+                isSheetDragging = false;
+                const deltaY = dragCurrentY - dragStartY;
+                const elapsed = Date.now() - dragStartTime;
+                const velocity = deltaY / Math.max(1, elapsed);
+
+                content.style.transition = 'transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                modal.style.transition = 'background-color 0.26s cubic-bezier(0.2, 0.8, 0.2, 1)';
+
+                // Αν σύρθηκε > 85px ή έγινε γρήγορο swipe down
+                if (deltaY > 85 || (deltaY > 35 && velocity > 0.45)) {
+                    triggerHaptic();
+                    content.style.transform = 'translateY(100%)';
+                    modal.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+                    setTimeout(() => {
+                        closeFn(true);
+                        content.style.transform = '';
+                        content.style.transition = '';
+                        modal.style.backgroundColor = '';
+                        modal.style.transition = '';
+                    }, 240);
+                } else {
+                    // Επαναφορά στην αρχική θέση (Snap back)
+                    content.style.transform = 'translateY(0)';
+                    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.72)';
+                    setTimeout(() => {
+                        content.style.transform = '';
+                        content.style.transition = '';
+                        modal.style.backgroundColor = '';
+                        modal.style.transition = '';
+                    }, 260);
+                }
+            }
+
+            if (handleArea) {
+                handleArea.addEventListener('touchstart', onStart, { passive: true });
+                handleArea.addEventListener('mousedown', onStart);
+            }
+            if (header) {
+                header.addEventListener('touchstart', onStart, { passive: true });
+                header.addEventListener('mousedown', onStart);
+            }
+
+            window.addEventListener('touchmove', onMove, { passive: false });
+            window.addEventListener('mousemove', onMove);
+            window.addEventListener('touchend', onEnd);
+            window.addEventListener('mouseup', onEnd);
+        }
+
+        /* --- MODAL CONTROLS WITH SMOOTH SLIDE DOWN --- */
         function openSettings() {
             triggerHaptic();
-            document.getElementById('settingsModal').style.display = 'flex';
+            const modal = document.getElementById('settingsModal');
+            modal.classList.remove('closing');
+            modal.style.display = 'flex';
             updateScrollLock();
             renderSettingsList();
         }
 
-        function closeSettings() {
-            document.getElementById('settingsModal').style.display = 'none';
+        function closeSettings(immediate = false) {
+            const modal = document.getElementById('settingsModal');
+            if (!modal || modal.style.display !== 'flex') return;
+
+            if (immediate) {
+                modal.style.display = 'none';
+                modal.classList.remove('closing');
+                updateScrollLock();
+                return;
+            }
+
+            if (modal.classList.contains('closing')) return;
+            modal.classList.add('closing');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.classList.remove('closing');
+                updateScrollLock();
+            }, 240);
+        }
+
+        function openEditModal(id) {
+            const ex = exercises.find(e => e.id === id);
+            if (!ex) return;
+
+            document.getElementById('editExId').value = ex.id;
+            document.getElementById('editExName').value = ex.name;
+            document.getElementById('editExGoal').value = ex.goal;
+            document.getElementById('editExGroup').value = ex.group || 'Chest';
+            
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('closing');
+            modal.style.display = 'flex';
             updateScrollLock();
+        }
+
+        function closeEditModal(immediate = false) {
+            const modal = document.getElementById('editModal');
+            if (!modal || modal.style.display !== 'flex') return;
+
+            if (immediate) {
+                modal.style.display = 'none';
+                modal.classList.remove('closing');
+                updateScrollLock();
+                return;
+            }
+
+            if (modal.classList.contains('closing')) return;
+            modal.classList.add('closing');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.classList.remove('closing');
+                updateScrollLock();
+            }, 240);
         }
 
         function renderSettingsList() {
@@ -1722,24 +1932,6 @@
             }
         }
 
-        function openEditModal(id) {
-            const ex = exercises.find(e => e.id === id);
-            if (!ex) return;
-
-            document.getElementById('editExId').value = ex.id;
-            document.getElementById('editExName').value = ex.name;
-            document.getElementById('editExGoal').value = ex.goal;
-            document.getElementById('editExGroup').value = ex.group || 'Chest';
-            
-            document.getElementById('editModal').style.display = 'flex';
-            updateScrollLock();
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-            updateScrollLock();
-        }
-
         function saveEdit() {
             const id = parseInt(document.getElementById('editExId').value);
             const newName = document.getElementById('editExName').value.trim();
@@ -1767,7 +1959,7 @@
             }
         }
 
-        // Start App
+        // Εκκίνηση εφαρμογής
         initApp();
 
         /* --- SERVICE WORKER AUTO-UPDATE --- */
