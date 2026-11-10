@@ -104,8 +104,8 @@
             background: rgba(255, 255, 255, 0.15); 
         }
 
-        /* --- INTENSE GLOW PROGRESS SECTION --- */
-        .progress-container { margin-bottom: 25px; }
+        /* --- PROGRESS SECTION --- */
+        .progress-container { margin-bottom: 18px; }
         .progress-bar-bg {
             background-color: rgba(255, 255, 255, 0.06);
             border-radius: 20px;
@@ -142,10 +142,110 @@
             font-variant-numeric: tabular-nums;
         }
 
+        /* --- MULTI-SELECT MUSCLE GROUP FILTER CHIPS --- */
+        .group-filter-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0 -20px 22px -20px;
+            padding: 2px 20px 6px 20px;
+            scroll-behavior: smooth;
+        }
+        .group-filter-track {
+            display: flex;
+            gap: 8px;
+            width: max-content;
+        }
+        .group-filter-chip {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-sec);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13.5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            white-space: nowrap;
+        }
+        .group-filter-chip:active {
+            transform: scale(0.94);
+        }
+        .group-filter-chip.active {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.28), rgba(184, 27, 19, 0.22));
+            border-color: rgba(255, 59, 48, 0.6);
+            color: #FFFFFF;
+            box-shadow: 0 0 16px rgba(255, 59, 48, 0.3);
+        }
+        .group-chip-count {
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: inherit;
+            font-variant-numeric: tabular-nums;
+        }
+        .group-filter-chip.active .group-chip-count {
+            background: rgba(255, 59, 48, 0.45);
+            color: #FFFFFF;
+        }
+
         #exerciseList {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 22px;
+        }
+
+        /* --- MUSCLE GROUP SECTIONS --- */
+        .muscle-group-section {
+            display: flex;
+            flex-direction: column;
+        }
+        .muscle-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 4px 6px 12px 6px;
+        }
+        .group-header-title {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--accent-red-bright);
+            text-shadow: 0 0 14px rgba(255, 59, 48, 0.45);
+        }
+        .group-header-badge {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text-sec);
+            font-variant-numeric: tabular-nums;
+        }
+        .muscle-group-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        /* --- EMPTY STATE --- */
+        .empty-state {
+            text-align: center;
+            padding: 44px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed var(--card-border);
+            border-radius: 22px;
+            color: var(--text-sec);
+            margin: 10px 0;
+        }
+        .empty-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+        .empty-sub {
+            font-size: 13px;
         }
 
         /* --- POLISHED GLOW CARDS --- */
@@ -377,7 +477,7 @@
         }
         .tracker-btn:active { transform: scale(0.94); background: rgba(255,255,255,0.12); }
 
-        /* --- FLOATING REST TIMER WIDGET --- */
+        /* --- FLOATING REST TIMER WIDGET (120s Silent) --- */
         .rest-timer-widget {
             position: fixed;
             bottom: calc(78px + env(safe-area-inset-bottom));
@@ -485,7 +585,7 @@
             display: flex;
         }
 
-        /* --- FLOATING GLASS DOCK (BOTTOM BAR) --- */
+        /* --- FLOATING GLASS DOCK (BOTTOM STATUS FILTERS) --- */
         .glass-dock {
             position: fixed;
             bottom: calc(18px + env(safe-area-inset-bottom));
@@ -564,7 +664,7 @@
             padding: 24px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
             box-sizing: border-box;
             box-shadow: 0 20px 50px rgba(0,0,0,0.6);
         }
@@ -584,24 +684,63 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        input {
+        .modal-label {
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-sec);
+            margin-bottom: -6px;
+            margin-top: 4px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        input, select, .form-select {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--card-border);
             color: white;
-            padding: 14px;
+            padding: 13px 14px;
             border-radius: 14px;
-            font-size: 16px;
+            font-size: 15.5px;
             outline: none;
             font-family: inherit;
             width: 100%;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, background-color 0.2s;
         }
-        input:focus { border-color: var(--accent-red); }
+        input:focus, select:focus, .form-select:focus { 
+            border-color: var(--accent-red); 
+            background: rgba(255, 255, 255, 0.08);
+        }
         input::placeholder { color: var(--text-sec); }
 
-        .add-group { display: flex; gap: 10px; width: 100%; }
-        .add-group input[type="text"] { flex: 2; min-width: 0; }
-        .add-group input[type="number"] { flex: 1; min-width: 0; }
+        select, .form-select {
+            appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238E8E93' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 15px;
+            padding-right: 38px;
+        }
+        select option {
+            background: #1C1C1E;
+            color: #FFFFFF;
+        }
+
+        /* 3-INPUT ADD FORM */
+        .add-container {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            width: 100%;
+        }
+        .add-row {
+            display: flex;
+            gap: 9px;
+            width: 100%;
+        }
+        .add-row input[type="number"] { flex: 1; min-width: 0; }
+        .add-row select { flex: 1.4; min-width: 0; }
 
         .action-btn {
             background: linear-gradient(135deg, var(--accent-red), #B81B13);
@@ -629,14 +768,14 @@
             box-shadow: none; 
         }
 
-        .modal-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 8px; }
 
         .settings-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
             overflow-y: auto;
-            margin-top: 10px;
+            margin-top: 4px;
             padding-bottom: 10px;
             touch-action: pan-y;
             overscroll-behavior: contain;
@@ -666,7 +805,25 @@
         }
         .set-item-info { flex: 1; }
         .set-item-name { font-weight: 700; font-size: 15px; }
-        .set-item-goal { color: var(--text-sec); font-size: 13px; margin-top: 2px; }
+        .set-item-goal { 
+            color: var(--text-sec); 
+            font-size: 13px; 
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .set-item-badge {
+            display: inline-block;
+            padding: 1px 7px;
+            border-radius: 8px;
+            background: rgba(255, 59, 48, 0.16);
+            color: var(--accent-red-bright);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
         
         .set-item-actions { display: flex; gap: 8px; }
         .set-item-actions button {
@@ -700,11 +857,16 @@
                 <span class="progress-count" id="progressCount">0 / 0 sets</span>
             </div>
         </div>
+
+        <!-- HORIZONTAL MULTI-SELECT MUSCLE GROUP FILTER -->
+        <div class="group-filter-scroll">
+            <div class="group-filter-track" id="groupFilterTrack"></div>
+        </div>
     </header>
 
     <main id="exerciseList"></main>
 
-    <!-- FLOATING REST TIMER WIDGET (120s Main) -->
+    <!-- FLOATING REST TIMER WIDGET (120s Silent) -->
     <div id="restTimerWidget" class="rest-timer-widget">
         <button id="timerMainBtn" class="timer-main-btn" onclick="handleTimerClick()" aria-label="Rest Timer">
             <svg class="timer-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -719,7 +881,7 @@
         </button>
     </div>
 
-    <!-- FLOATING GLASS DOCK (FILTERS) -->
+    <!-- FLOATING GLASS DOCK (BOTTOM STATUS FILTERS) -->
     <nav class="glass-dock">
         <button class="dock-pill active" id="filter-all" onclick="setFilter('all')">
             Όλα <span class="dock-badge" id="badge-all">0</span>
@@ -740,11 +902,22 @@
                 <button onclick="closeSettings()" class="close-btn">✕</button>
             </div>
             
-            <div class="add-group">
-                <input type="text" id="newExName" placeholder="New exercise...">
-                <input type="number" id="newExGoal" placeholder="Sets" min="1">
+            <div class="add-container">
+                <input type="text" id="newExName" placeholder="New exercise name...">
+                <div class="add-row">
+                    <input type="number" id="newExGoal" placeholder="Sets" min="1">
+                    <select id="newExGroup" class="form-select">
+                        <option value="Chest">Chest</option>
+                        <option value="Back">Back</option>
+                        <option value="Shoulders">Shoulders</option>
+                        <option value="Biceps">Biceps</option>
+                        <option value="Triceps">Triceps</option>
+                        <option value="Legs">Legs</option>
+                        <option value="Abs">Abs</option>
+                    </select>
+                </div>
+                <button onclick="addExercise()" class="action-btn">Add to Routine</button>
             </div>
-            <button onclick="addExercise()" class="action-btn">Add to Routine</button>
 
             <div class="settings-list" id="settingsExerciseList"></div>
 
@@ -763,9 +936,22 @@
                 <h2>Edit Exercise</h2>
             </div>
             <input type="hidden" id="editExId">
-            <label style="font-weight: 600; font-size: 14px; margin-bottom: -8px;">Name</label>
+            
+            <label class="modal-label">Name</label>
             <input type="text" id="editExName" placeholder="Exercise Name">
-            <label style="font-weight: 600; font-size: 14px; margin-bottom: -8px; margin-top: 6px;">Weekly Goal</label>
+            
+            <label class="modal-label">Muscle Group</label>
+            <select id="editExGroup" class="form-select">
+                <option value="Chest">Chest</option>
+                <option value="Back">Back</option>
+                <option value="Shoulders">Shoulders</option>
+                <option value="Biceps">Biceps</option>
+                <option value="Triceps">Triceps</option>
+                <option value="Legs">Legs</option>
+                <option value="Abs">Abs</option>
+            </select>
+
+            <label class="modal-label">Weekly Goal (Sets)</label>
             <input type="number" id="editExGoal" placeholder="Total Sets Goal" min="1">
             
             <div class="modal-actions">
@@ -776,70 +962,63 @@
     </div>
 
     <script>
+        /* --- MUSCLE GROUPS DEFINITION --- */
+        const MUSCLE_GROUPS = [
+            { id: 'Chest', name: 'Chest' },
+            { id: 'Back', name: 'Back' },
+            { id: 'Shoulders', name: 'Shoulders' },
+            { id: 'Biceps', name: 'Biceps' },
+            { id: 'Triceps', name: 'Triceps' },
+            { id: 'Legs', name: 'Legs' },
+            { id: 'Abs', name: 'Abs' }
+        ];
+
         /* --- CORE DATA & STATE --- */
         const initialExercises = [
-            { id: 1, name: "Flat Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 2, name: "Incline Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 3, name: "Shoulder Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 4, name: "Seated Row", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 5, name: "Lat Pulldown", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 6, name: "Lateral Raises", goal: 7, remaining: 7, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 7, name: "Rear Delts", goal: 4, remaining: 4, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 8, name: "Tricep (Overhead)", goal: 3, remaining: 3, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 9, name: "Tricep Extension", goal: 2, remaining: 2, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 10, name: "Biceps", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 11, name: "Shrugs", goal: 3, remaining: 3, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 12, name: "Leg Press", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 13, name: "Leg Extension", goal: 2, remaining: 2, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 14, name: "Leg Curl", goal: 6, remaining: 6, logs: [{w:'', r:''}, {w:'', r:''}] },
-            { id: 15, name: "RDL", goal: 4, remaining: 4, logs: [{w:'', r:''}, {w:'', r:''}] }
+            { id: 1, name: "Flat Press", group: "Chest", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 2, name: "Incline Press", group: "Chest", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 3, name: "Shoulder Press", group: "Shoulders", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 4, name: "Seated Row", group: "Back", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 5, name: "Lat Pulldown", group: "Back", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 6, name: "Lateral Raises", group: "Shoulders", goal: 7, remaining: 7, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 7, name: "Rear Delts", group: "Shoulders", goal: 4, remaining: 4, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 8, name: "Tricep (Overhead)", group: "Triceps", goal: 3, remaining: 3, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 9, name: "Tricep Extension", group: "Triceps", goal: 2, remaining: 2, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 10, name: "Biceps", group: "Biceps", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 11, name: "Shrugs", group: "Back", goal: 3, remaining: 3, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 12, name: "Leg Press", group: "Legs", goal: 5, remaining: 5, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 13, name: "Leg Extension", group: "Legs", goal: 2, remaining: 2, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 14, name: "Leg Curl", group: "Legs", goal: 6, remaining: 6, logs: [{w:'', r:''}, {w:'', r:''}] },
+            { id: 15, name: "RDL", group: "Legs", goal: 4, remaining: 4, logs: [{w:'', r:''}, {w:'', r:''}] }
         ];
 
         let exercises = [];
-        let currentFilter = 'all'; 
+        let currentFilter = 'all';          // 'all', 'pending', 'completed'
+        let selectedGroups = new Set();     // Άδειο Set σημαίνει 'Όλες'
         let expandedExerciseIds = new Set(); 
 
         function triggerHaptic() {
             if (navigator.vibrate) navigator.vibrate(40);
         }
 
-        /* --- REST TIMER & NOTIFICATIONS FOR IOS --- */
+        /* --- AUTOMATIC FALLBACK FOR OLD DATA --- */
+        function detectMuscleGroup(name) {
+            const n = (name || '').toLowerCase();
+            if (n.includes("shoulder") || n.includes("delt") || n.includes("lateral") || n.includes("ohp")) return "Shoulders";
+            if (n.includes("press") && !n.includes("leg")) return "Chest";
+            if (n.includes("chest") || n.includes("fly") || n.includes("dip") || n.includes("incline") || n.includes("flat")) return "Chest";
+            if (n.includes("row") || n.includes("lat") || n.includes("pulldown") || n.includes("pull") || n.includes("shrug") || n.includes("back")) return "Back";
+            if (n.includes("tricep") || (n.includes("extension") && !n.includes("leg"))) return "Triceps";
+            if (n.includes("bicep") || (n.includes("curl") && !n.includes("leg"))) return "Biceps";
+            if (n.includes("leg") || n.includes("squat") || n.includes("rdl") || n.includes("calf") || n.includes("quad")) return "Legs";
+            if (n.includes("ab") || n.includes("crunch") || n.includes("plank")) return "Abs";
+            return "Chest";
+        }
+
+        /* --- REST TIMER (120s SILENT - NO NOTIFICATIONS) --- */
         let activeTimerTotal = 120;
         let timerInterval = null;
         let timerEndTime = null;
-
-        function requestNotificationPermission() {
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
-            }
-        }
-
-        function triggerTimerFinishedAlert() {
-            // Δόνηση για Android / Browsers που την υποστηρίζουν
-            if (navigator.vibrate) {
-                navigator.vibrate([300, 150, 300, 150, 500]);
-            }
-
-            // Ειδοποίηση iOS (Προκαλεί τη δόνηση του συστήματος)
-            if ('Notification' in window && Notification.permission === 'granted') {
-                const title = "GYM - Rest Over!";
-                const options = {
-                    body: "Ο χρόνος ξεκούρασης τελείωσε. Πάμε για το επόμενο σετ!",
-                    tag: "gym-rest-timer",
-                    renotify: true
-                };
-
-                if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
-                    navigator.serviceWorker.ready.then(registration => {
-                        registration.showNotification(title, options);
-                    }).catch(() => {
-                        new Notification(title, options);
-                    });
-                } else {
-                    new Notification(title, options);
-                }
-            }
-        }
 
         function formatTimerDisplay(seconds) {
             const m = Math.floor(seconds / 60);
@@ -849,7 +1028,6 @@
 
         function handleTimerClick() {
             triggerHaptic();
-            requestNotificationPermission();
 
             const btn = document.getElementById('timerMainBtn');
             if (btn.classList.contains('finished')) {
@@ -889,8 +1067,7 @@
                     btn.classList.add('finished');
                     display.innerText = '0:00';
                     
-                    triggerTimerFinishedAlert();
-
+                    // Αθόρυβο τέλος - κανένα notification ή ήχος
                     setTimeout(() => {
                         if (!timerInterval && btn.classList.contains('finished')) {
                             stopTimer();
@@ -962,18 +1139,23 @@
                     if (!ex.logs) {
                         ex.logs = [{w: '', r: ''}, {w: '', r: ''}];
                     }
+                    if (!ex.group) {
+                        ex.group = detectMuscleGroup(ex.name);
+                    }
                 });
             } else {
                 exercises = JSON.parse(JSON.stringify(initialExercises));
             }
             initDragAndDropListeners();
+            renderGroupFilter();
             renderUI();
         }
 
         function saveData() {
             localStorage.setItem('gymData', JSON.stringify(exercises));
+            updateGroupFilterCounts();
             renderUI();
-            if(document.getElementById('settingsModal').style.display === 'flex') {
+            if (document.getElementById('settingsModal').style.display === 'flex') {
                 renderSettingsList();
             }
         }
@@ -997,6 +1179,81 @@
             currentFilter = filter;
             document.querySelectorAll('.dock-pill').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`filter-${filter}`).classList.add('active');
+            renderUI();
+        }
+
+        /* --- MULTI-SELECT MUSCLE GROUP FILTER LOGIC --- */
+        function renderGroupFilter() {
+            const track = document.getElementById('groupFilterTrack');
+            if (!track) return;
+
+            const isAll = selectedGroups.size === 0;
+
+            let html = `
+                <button class="group-filter-chip ${isAll ? 'active' : ''}" id="group-chip-all" onclick="toggleGroupFilter('all')">
+                    <span>Όλες</span>
+                    <span class="group-chip-count" id="chip-count-all">${exercises.length}</span>
+                </button>
+            `;
+
+            MUSCLE_GROUPS.forEach(g => {
+                const count = exercises.filter(e => (e.group || 'Chest') === g.id).length;
+                const isActive = !isAll && selectedGroups.has(g.id);
+                html += `
+                    <button class="group-filter-chip ${isActive ? 'active' : ''}" id="group-chip-${g.id}" onclick="toggleGroupFilter('${g.id}')">
+                        <span>${g.name}</span>
+                        <span class="group-chip-count" id="chip-count-${g.id}">${count}</span>
+                    </button>
+                `;
+            });
+
+            track.innerHTML = html;
+        }
+
+        function updateGroupFilterActiveStates() {
+            const isAll = selectedGroups.size === 0;
+            const allBtn = document.getElementById('group-chip-all');
+            if (allBtn) {
+                allBtn.classList.toggle('active', isAll);
+            }
+
+            MUSCLE_GROUPS.forEach(g => {
+                const btn = document.getElementById(`group-chip-${g.id}`);
+                if (btn) {
+                    btn.classList.toggle('active', !isAll && selectedGroups.has(g.id));
+                }
+            });
+        }
+
+        function updateGroupFilterCounts() {
+            const allCount = document.getElementById('chip-count-all');
+            if (allCount) allCount.innerText = exercises.length;
+
+            MUSCLE_GROUPS.forEach(g => {
+                const el = document.getElementById(`chip-count-${g.id}`);
+                if (el) {
+                    el.innerText = exercises.filter(e => (e.group || 'Chest') === g.id).length;
+                }
+            });
+        }
+
+        function toggleGroupFilter(groupId) {
+            triggerHaptic();
+
+            if (groupId === 'all') {
+                selectedGroups.clear();
+            } else {
+                if (selectedGroups.has(groupId)) {
+                    selectedGroups.delete(groupId);
+                } else {
+                    selectedGroups.add(groupId);
+                    if (selectedGroups.size === MUSCLE_GROUPS.length) {
+                        selectedGroups.clear();
+                    }
+                }
+            }
+
+            updateGroupFilterActiveStates();
             renderUI();
         }
 
@@ -1055,6 +1312,7 @@
             }
         }
 
+        /* --- MAIN UI RENDER WITH GROUP SECTIONS --- */
         function renderUI() {
             const currentScroll = window.scrollY;
             const listContainer = document.getElementById('exerciseList');
@@ -1082,65 +1340,116 @@
             document.getElementById('badge-pending').innerText = pendingCount;
             document.getElementById('badge-completed').innerText = completedCount;
 
+            const isAllGroups = selectedGroups.size === 0;
+
             const filteredExercises = exercises.filter(ex => {
-                if (currentFilter === 'pending') return ex.remaining > 0;
-                if (currentFilter === 'completed') return ex.remaining === 0;
+                if (currentFilter === 'pending' && ex.remaining === 0) return false;
+                if (currentFilter === 'completed' && ex.remaining > 0) return false;
+                const group = ex.group || 'Chest';
+                if (!isAllGroups && !selectedGroups.has(group)) return false;
                 return true;
             });
 
-            filteredExercises.forEach(ex => {
-                const isCompleted = ex.remaining === 0;
-                const isExpanded = expandedExerciseIds.has(ex.id);
-                
-                let logsHtml = '';
-                ex.logs.forEach((log, index) => {
-                    logsHtml += `
-                        <div class="tracker-row">
-                            <span class="tracker-label">S${index + 1}</span>
-                            <input type="text" inputmode="decimal" class="tracker-input" placeholder="kg" value="${log.w}" oninput="this.value = this.value.replace(',', '.'); updateLog(${ex.id}, ${index}, 'w', this.value)">
-                            <span class="tracker-sep">×</span>
-                            <div class="rep-input-group">
-                                <input type="text" inputmode="decimal" class="tracker-input rep-input" data-ex="${ex.id}" data-idx="${index}" placeholder="reps" value="${log.r}" oninput="this.value = this.value.replace(',', '.'); updateLog(${ex.id}, ${index}, 'r', this.value)">
-                                <button type="button" class="rep-plus-btn" onclick="quickAddRep(${ex.id}, ${index})" aria-label="Add Rep">+</button>
-                            </div>
-                        </div>
-                    `;
+            let renderedSectionsCount = 0;
+
+            MUSCLE_GROUPS.forEach(group => {
+                if (!isAllGroups && !selectedGroups.has(group.id)) {
+                    return;
+                }
+
+                const groupExercises = filteredExercises.filter(ex => (ex.group || 'Chest') === group.id);
+                if (groupExercises.length === 0) {
+                    return;
+                }
+
+                renderedSectionsCount++;
+
+                let groupGoal = 0;
+                let groupRemaining = 0;
+                groupExercises.forEach(e => {
+                    groupGoal += e.goal;
+                    groupRemaining += e.remaining;
                 });
-                
-                const card = document.createElement('div');
-                card.className = `card ${isCompleted ? 'completed' : ''} ${isExpanded ? 'expanded' : ''}`;
-                card.dataset.id = ex.id;
-                
-                card.innerHTML = `
-                    <div class="card-top">
-                        <div class="card-left" onclick="toggleExpand(${ex.id})">
-                            <div class="exercise-header-title">
-                                <span class="exercise-name">${ex.name}</span>
-                                <span class="checkmark">✓</span>
-                                <span class="chevron">▼</span>
-                            </div>
-                            <div class="exercise-status">${ex.remaining} / ${ex.goal} sets left</div>
-                        </div>
-                        <div class="card-right">
-                            <button class="circle-btn btn-minus" onclick="removeSet(${ex.id})">-</button>
-                            <button class="circle-btn btn-plus" onclick="addSet(${ex.id})">+</button>
-                        </div>
+                const groupDone = groupGoal - groupRemaining;
+
+                const sectionEl = document.createElement('div');
+                sectionEl.className = 'muscle-group-section';
+
+                sectionEl.innerHTML = `
+                    <div class="muscle-group-header">
+                        <span class="group-header-title">${group.name}</span>
+                        <span class="group-header-badge">${groupDone}/${groupGoal} σετ • ${groupExercises.length} ${groupExercises.length === 1 ? 'άσκηση' : 'ασκήσεις'}</span>
                     </div>
+                    <div class="muscle-group-cards"></div>
+                `;
+
+                const cardsContainer = sectionEl.querySelector('.muscle-group-cards');
+
+                groupExercises.forEach(ex => {
+                    const isCompleted = ex.remaining === 0;
+                    const isExpanded = expandedExerciseIds.has(ex.id);
                     
-                    <div class="card-collapsible">
-                        <div class="card-collapsible-inner">
-                            <div class="tracker-container">
-                                ${logsHtml}
-                                <div class="tracker-actions">
-                                    <button class="tracker-btn" onclick="removeLogSet(${ex.id})">- Set</button>
-                                    <button class="tracker-btn" onclick="addLogSet(${ex.id})">+ Set</button>
+                    let logsHtml = '';
+                    ex.logs.forEach((log, index) => {
+                        logsHtml += `
+                            <div class="tracker-row">
+                                <span class="tracker-label">S${index + 1}</span>
+                                <input type="text" inputmode="decimal" class="tracker-input" placeholder="kg" value="${log.w}" oninput="this.value = this.value.replace(',', '.'); updateLog(${ex.id}, ${index}, 'w', this.value)">
+                                <span class="tracker-sep">×</span>
+                                <div class="rep-input-group">
+                                    <input type="text" inputmode="decimal" class="tracker-input rep-input" data-ex="${ex.id}" data-idx="${index}" placeholder="reps" value="${log.r}" oninput="this.value = this.value.replace(',', '.'); updateLog(${ex.id}, ${index}, 'r', this.value)">
+                                    <button type="button" class="rep-plus-btn" onclick="quickAddRep(${ex.id}, ${index})" aria-label="Add Rep">+</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    const card = document.createElement('div');
+                    card.className = `card ${isCompleted ? 'completed' : ''} ${isExpanded ? 'expanded' : ''}`;
+                    card.dataset.id = ex.id;
+                    
+                    card.innerHTML = `
+                        <div class="card-top">
+                            <div class="card-left" onclick="toggleExpand(${ex.id})">
+                                <div class="exercise-header-title">
+                                    <span class="exercise-name">${ex.name}</span>
+                                    <span class="checkmark">✓</span>
+                                    <span class="chevron">▼</span>
+                                </div>
+                                <div class="exercise-status">${ex.remaining} / ${ex.goal} sets left</div>
+                            </div>
+                            <div class="card-right">
+                                <button class="circle-btn btn-minus" onclick="removeSet(${ex.id})">-</button>
+                                <button class="circle-btn btn-plus" onclick="addSet(${ex.id})">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="card-collapsible">
+                            <div class="card-collapsible-inner">
+                                <div class="tracker-container">
+                                    ${logsHtml}
+                                    <div class="tracker-actions">
+                                        <button class="tracker-btn" onclick="removeLogSet(${ex.id})">- Set</button>
+                                        <button class="tracker-btn" onclick="addLogSet(${ex.id})">+ Set</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    `;
+                    cardsContainer.appendChild(card);
+                });
+
+                listContainer.appendChild(sectionEl);
+            });
+
+            if (renderedSectionsCount === 0) {
+                listContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-title">Δεν βρέθηκαν ασκήσεις</div>
+                        <div class="empty-sub">Δεν υπάρχουν ασκήσεις για τα επιλεγμένα φίλτρα.</div>
                     </div>
                 `;
-                listContainer.appendChild(card);
-            });
+            }
 
             const completedSets = totalGoal - totalRemaining;
             let progressPercent = 0;
@@ -1302,7 +1611,10 @@
                 item.innerHTML = `
                     <div class="set-item-info">
                         <div class="set-item-name">${ex.name}</div>
-                        <div class="set-item-goal">Goal: ${ex.goal} sets</div>
+                        <div class="set-item-goal">
+                            <span class="set-item-badge">${ex.group || 'Chest'}</span>
+                            <span>Goal: ${ex.goal} sets</span>
+                        </div>
                     </div>
                     <div class="set-item-actions">
                         <button class="btn-edit" onclick="openEditModal(${ex.id})">✎</button>
@@ -1317,12 +1629,14 @@
         function addExercise() {
             const nameInput = document.getElementById('newExName');
             const goalInput = document.getElementById('newExGoal');
+            const groupSelect = document.getElementById('newExGroup');
             
             const name = nameInput.value.trim();
             const goal = parseInt(goalInput.value);
+            const group = groupSelect.value || 'Chest';
 
             if (!name || isNaN(goal) || goal < 1) {
-                alert("Please enter a valid name and number of sets.");
+                alert("Παρακαλώ συμπληρώστε έγκυρο όνομα και αριθμό σετ.");
                 return;
             }
 
@@ -1331,6 +1645,7 @@
             exercises.push({
                 id: newId,
                 name: name,
+                group: group,
                 goal: goal,
                 remaining: goal,
                 logs: [{w: '', r: ''}, {w: '', r: ''}]
@@ -1338,12 +1653,14 @@
 
             nameInput.value = '';
             goalInput.value = '';
+            renderGroupFilter();
             saveData();
         }
 
         function deleteExercise(id) {
-            if(confirm("Delete this exercise permanently?")) {
+            if (confirm("Delete this exercise permanently?")) {
                 exercises = exercises.filter(ex => ex.id !== id);
+                renderGroupFilter();
                 saveData();
             }
         }
@@ -1355,6 +1672,7 @@
             document.getElementById('editExId').value = ex.id;
             document.getElementById('editExName').value = ex.name;
             document.getElementById('editExGoal').value = ex.goal;
+            document.getElementById('editExGroup').value = ex.group || 'Chest';
             
             document.getElementById('editModal').style.display = 'flex';
             updateScrollLock();
@@ -1369,9 +1687,10 @@
             const id = parseInt(document.getElementById('editExId').value);
             const newName = document.getElementById('editExName').value.trim();
             const newGoal = parseInt(document.getElementById('editExGoal').value);
+            const newGroup = document.getElementById('editExGroup').value;
 
             if (!newName || isNaN(newGoal) || newGoal < 1) {
-                alert("Please enter valid data.");
+                alert("Παρακαλώ συμπληρώστε έγκυρα στοιχεία.");
                 return;
             }
 
@@ -1379,11 +1698,13 @@
             if (exIndex !== -1) {
                 const ex = exercises[exIndex];
                 ex.name = newName;
+                ex.group = newGroup;
                 
                 const completedSets = ex.goal - ex.remaining;
                 ex.goal = newGoal;
                 ex.remaining = Math.max(0, newGoal - completedSets);
 
+                renderGroupFilter();
                 saveData();
                 closeEditModal();
             }
